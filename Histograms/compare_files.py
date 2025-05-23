@@ -51,8 +51,8 @@ def compare_npy_to_mat(npy_path, mat_path, mat_key, atol=1e-6):
 
 if __name__ == "__main__":
     result = compare_npy_to_mat(
-        npy_path="train_data_pmf_probs_bonafide.npy",
-        mat_path="ASVSpoof05/2_16/ASVspoof5_train_data.mat",
+        npy_path="./ASVspoof5_train/train_data_ASVSpoof5_pmf_probs_bonafide.npy",
+        mat_path="C:/Users/avish/OneDrive/Desktop/thesis_research/ASVSpoof5_Time_Embeddings/calculate_hist/ASVSpoof05/2_16/ASVspoof5_train_data.mat",
         mat_key="pmf_probs_bonafide"  # <-- Replace with your real key
     )
 
@@ -65,8 +65,8 @@ if __name__ == "__main__":
 
 
     result = compare_npy_to_mat(
-        npy_path="train_data_pmf_probs_spoofed.npy",
-        mat_path="ASVSpoof05/2_16/ASVspoof5_train_data.mat",
+        npy_path='./ASVspoof5_train/train_data_ASVSpoof5_pmf_probs_spoofed.npy',
+        mat_path="C:/Users/avish/OneDrive/Desktop/thesis_research/ASVSpoof5_Time_Embeddings/calculate_hist/ASVSpoof05/2_16/ASVspoof5_train_data.mat",
         mat_key="pmf_probs_spoofed"  # <-- Replace with your real key
     )
 

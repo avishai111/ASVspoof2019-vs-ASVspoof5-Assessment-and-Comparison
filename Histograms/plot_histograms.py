@@ -1,20 +1,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 
 # Constants
 NUM_BINS = 2**16
-BIN_EDGES = np.linspace(-1, 1, NUM_BINS)
 FontSize_title = 36
 FontSize_legend = 24
 axis_fontsize = 36
 
 
-import numpy as np
-import matplotlib.pyplot as plt
 
-def plot_precomputed_pmfs(pmf_a, pmf_b, label_a, label_b, title, bins=2**16, save_path=None):
+def plot_precomputed_pmfs(pmf_a, pmf_b, label_a, label_b, title, bins=NUM_BINS, save_path=None):
     """
-    Plot two precomputed PMFs side by side with non-blocking behavior for scripts.
+    Plot two precomputed PMFs as filled area plots for visual comparison.
 
     Parameters:
     - pmf_a: np.ndarray — PMF values A
@@ -23,8 +21,7 @@ def plot_precomputed_pmfs(pmf_a, pmf_b, label_a, label_b, title, bins=2**16, sav
     - label_b: str — legend label for B
     - title: str — plot title
     - bins: int — number of bins (default: 65536)
-    - save_path: str — if given, saves plot to file
-    - pause_time: float — how long to display the plot (seconds)
+    - save_path: str — if provided, saves the figure to this path
     """
     assert len(pmf_a) == bins and len(pmf_b) == bins, "PMF arrays must match bin count."
 
@@ -32,8 +29,8 @@ def plot_precomputed_pmfs(pmf_a, pmf_b, label_a, label_b, title, bins=2**16, sav
     bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
 
     plt.figure(figsize=(14, 6))
-    plt.bar(bin_centers, pmf_a, alpha=0.5, width=1, label=label_a)
-    plt.bar(bin_centers, pmf_b, alpha=0.5, width=1, label=label_b)
+    plt.fill_between(bin_centers, pmf_a, alpha=0.5, label=label_a)
+    plt.fill_between(bin_centers, pmf_b, alpha=0.5, label=label_b)
     plt.xlabel('bins')
     plt.ylabel('PMF')
     plt.xlim([-0.01, 0.01])
@@ -42,12 +39,17 @@ def plot_precomputed_pmfs(pmf_a, pmf_b, label_a, label_b, title, bins=2**16, sav
     plt.legend(fontsize=18)
     plt.xticks(fontsize=18)
     plt.yticks(fontsize=18)
+    plt.gca().xaxis.set_major_formatter(ticker.FormatStrFormatter('%.2f'))
+    plt.gca().yaxis.set_major_formatter(ticker.FormatStrFormatter('%.2f'))
     plt.tight_layout()
 
     if save_path:
         plt.savefig(save_path, dpi=300)
+        plt.close()
     else:
         plt.show()
+        plt.close()
+
   
 
 
@@ -61,21 +63,21 @@ if __name__ == "__main__":
     pmf_probs_bonafide_train_ASVspoof05 = np.load('./ASVspoof5_train/train_data_ASVSpoof5_pmf_probs_bonafide.npy')
     pmf_probs_spoofed_train_ASVspoof05  = np.load('./ASVspoof5_train/train_data_ASVSpoof5_pmf_probs_spoofed.npy')
 
-    # pmf_probs_bonafide_dev_ASVspoof05 = np.load('./ASVspoof5_dev/dev_data_ASVSpoof5_pmf_probs_bonafide.npy')
-    # pmf_probs_spoofed_dev_ASVspoof05  = np.load('./ASVspoof5_dev/dev_data_ASVSpoof5_pmf_probs_spoofed.npy')
+    pmf_probs_bonafide_dev_ASVspoof05 = np.load('./ASVspoof5_dev/dev_data_ASVSpoof5_pmf_probs_bonafide.npy')
+    pmf_probs_spoofed_dev_ASVspoof05  = np.load('./ASVspoof5_dev/dev_data_ASVSpoof5_pmf_probs_spoofed.npy')
 
-    # pmf_probs_bonafide_eval_ASVspoof05 = np.load('./ASVspoof5_eval/eval_data_ASVSpoof5_pmf_probs_bonafide.npy')
-    # pmf_probs_spoofed_eval_ASVspoof05  = np.load('./ASVspoof5_eval/eval_data_ASVSpoof5_pmf_probs_spoofed.npy')
+    pmf_probs_bonafide_eval_ASVspoof05 = np.load('./ASVspoof5_eval/eval_data_ASVSpoof5_pmf_probs_bonafide.npy')
+    pmf_probs_spoofed_eval_ASVspoof05  = np.load('./ASVspoof5_eval/eval_data_ASVSpoof5_pmf_probs_spoofed.npy')
 
-    # # === ASVspoof 2019 ===
-    # pmf_probs_bonafide_train_ASVspoof2019 = np.load('./ASVspoof2019_train/train_data_ASVSpoof2019_pmf_probs_bonafide.npy')
-    # pmf_probs_spoofed_train_ASVspoof2019  = np.load('./ASVspoof2019_train/train_data_ASVSpoof2019_pmf_probs_spoofed.npy')
+    # === ASVspoof 2019 ===
+    pmf_probs_bonafide_train_ASVspoof2019 = np.load('./ASVspoof2019_train/train_data_ASVSpoof2019_pmf_probs_bonafide.npy')
+    pmf_probs_spoofed_train_ASVspoof2019  = np.load('./ASVspoof2019_train/train_data_ASVSpoof2019_pmf_probs_spoofed.npy')
 
-    # pmf_probs_bonafide_dev_ASVspoof2019 = np.load('./ASVspoof2019_dev/dev_data_ASVSpoof2019_pmf_probs_bonafide.npy')
-    # pmf_probs_spoofed_dev_ASVspoof2019  = np.load('./ASVspoof2019_dev/dev_data_ASVSpoof2019_pmf_probs_spoofed.npy')
+    pmf_probs_bonafide_dev_ASVspoof2019 = np.load('./ASVspoof2019_dev/dev_data_ASVSpoof2019_pmf_probs_bonafide.npy')
+    pmf_probs_spoofed_dev_ASVspoof2019  = np.load('./ASVspoof2019_dev/dev_data_ASVSpoof2019_pmf_probs_spoofed.npy')
 
-    # pmf_probs_bonafide_eval_ASVspoof2019 = np.load('./ASVspoof2019_eval/eval_data_ASVSpoof2019_pmf_probs_bonafide.npy')
-    # pmf_probs_spoofed_eval_ASVspoof2019  = np.load('./ASVspoof2019_eval/eval_data_ASVSpoof2019_pmf_probs_spoofed.npy')
+    pmf_probs_bonafide_eval_ASVspoof2019 = np.load('./ASVspoof2019_eval/eval_data_ASVSpoof2019_pmf_probs_bonafide.npy')
+    pmf_probs_spoofed_eval_ASVspoof2019  = np.load('./ASVspoof2019_eval/eval_data_ASVSpoof2019_pmf_probs_spoofed.npy')
 
      # === ASVspoof05 ===
 
