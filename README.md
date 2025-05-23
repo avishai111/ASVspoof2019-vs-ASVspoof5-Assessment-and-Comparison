@@ -1,6 +1,5 @@
 # 📄 [ASVspoof2019 vs. ASVspoof5: Assessment and Comparison](https://arxiv.org/abs/2505.15911)
 
-
 This repository contains the official implementation of the paper ["ASVspoof2019 vs. ASVspoof5: Assessment and Comparison"](https://arxiv.org/abs/2505.15911).
 
 In this work, we conduct a comprehensive evaluation and comparison of two benchmark datasets used developing spoofing countermeasures for automatic speaker verification systems: ASVspoof2019 and ASVspoof5. 
