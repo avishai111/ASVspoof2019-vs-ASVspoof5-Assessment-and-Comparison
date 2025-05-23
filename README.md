@@ -54,9 +54,9 @@ Follow the instructions below to reproduce key experiments from the paper:
 
 ---
 
-## 📚 Cite This Github and [Paper](https://arxiv.org/abs/2505.15911):
+## 📚 Cite The Paper:
 
-If you use this codebase in your research or publications, please consider citing it:
+If you use this codebase in your research or publications, please consider citing the paper:
 
 ```bibtex
 @misc{weizman2025asvspoof2019vsasvspoof5assessment,
@@ -70,7 +70,36 @@ If you use this codebase in your research or publications, please consider citin
       note = {Accepted to Interspeech 2025},
 }
 ```
+---
 
+## 🙌 Acknowledgements
+
+This work is inspired by the ASVspoof Challenge evaluation framework and research in spoofing countermeasures (CM) for automatic speaker verification (ASV) systems.
+
+Thank to the authors of the following repositories:
+
+```bibtex
+@ARTICLE{zhang2021one,
+  author={Zhang, You and Jiang, Fei and Duan, Zhiyao},
+  journal={IEEE Signal Processing Letters}, 
+  title={One-Class Learning Towards Synthetic Voice Spoofing Detection}, 
+  year={2021},
+  volume={28},
+  number={},
+  pages={937-941},
+  abstract={Human voices can be used to authenticate the identity of the speaker, but the automatic speaker verification (ASV) systems are vulnerable to voice spoofing attacks, such as impersonation, replay, text-to-speech, and voice conversion. Recently, researchers developed anti-spoofing techniques to improve the reliability of ASV systems against spoofing attacks. However, most methods encounter difficulties in detecting unknown attacks in practical use, which often have different statistical distributions from known attacks. Especially, the fast development of synthetic voice spoofing algorithms is generating increasingly powerful attacks, putting the ASV systems at risk of unseen attacks. In this work, we propose an anti-spoofing system to detect unknown synthetic voice spoofing attacks (i.e., text-to-speech or voice conversion) using one-class learning. The key idea is to compact the bona fide speech representation and inject an angular margin to separate the spoofing attacks in the embedding space. Without resorting to any data augmentation methods, our proposed system achieves an equal error rate (EER) of 2.19% on the evaluation set of ASVspoof 2019 Challenge logical access scenario, outperforming all existing single systems (i.e., those without model ensemble).},
+  keywords={},
+  doi={10.1109/LSP.2021.3076358},
+  ISSN={1558-2361},
+  month={},}
+```
+
+```bibtex
+@software{Confidence_Intervals,
+author = {Ferrer, Luciana and Riera, Pablo},
+title = {Confidence Intervals for evaluation in machine learning},
+url = {https://github.com/luferrer/ConfidenceIntervals}}
+```
 ---
 
 ## 📬 Contact
