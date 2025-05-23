@@ -104,7 +104,7 @@ url = {https://github.com/luferrer/ConfidenceIntervals}}
 ## 📬 Contact
 
 If you have questions, feedback, or want to collaborate, feel free to reach out:
-*Avishai Weizman**  
+
  📧 Email: [Avishai Weizman](mailto:wavishay@post.bgu.ac.il)  
 
  🔗 GitHub: [github.com/avishai111](https://github.com/avishai111)
