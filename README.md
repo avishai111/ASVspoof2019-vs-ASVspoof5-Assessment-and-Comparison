@@ -49,8 +49,7 @@ Follow the instructions below to reproduce key experiments from the paper:
 * **OCS System Score Evaluation**
   To evaluate the One-Class System (OCS) scores and check the genuine performance, use the following Jupyter notebooks:
 
-  * `OCS_System_Performance/eer_plot_text.ipynb`
-  * `OCS_System_Performance/eer_plot_text_Asvpsoof5_threshold.ipynb`
+  * `OCS_System_Performance/OCS_System_Performance.ipynb`
 
 ---
 
