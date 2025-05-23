@@ -59,12 +59,15 @@ Follow the instructions below to reproduce key experiments from the paper:
 If you use this codebase in your research or publications, please consider citing it:
 
 ```bibtex
-@misc{ASVspoof2019-vs-ASVspoof5-Assessment-and-Comparison,
-  author       = {Avishai Weizman},
-  title        = {Evaluation Measures for Audio Deepfake Detection and Speaker Verification},
-  year         = {2025},
-  url          = {https://github.com/avishai111/ASVspoof2019-vs-ASVspoof5-Assessment-and-Comparison},
-  note         = {GitHub repository}
+@misc{weizman2025asvspoof2019vsasvspoof5assessment,
+      title={ASVspoof2019 vs. ASVspoof5: Assessment and Comparison}, 
+      author={Avishai Weizman and Yehuda Ben-Shimol and Itshak Lapidot},
+      year={2025},
+      eprint={2505.15911},
+      archivePrefix={arXiv},
+      primaryClass={eess.AS},
+      url={https://arxiv.org/abs/2505.15911}, 
+      note = {Accepted to Interspeech 2025},
 }
 ```
 
