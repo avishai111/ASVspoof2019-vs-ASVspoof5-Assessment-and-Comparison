@@ -12,19 +12,10 @@ import numpy as np
 torch.nn.Module.dump_patches = True
 
 def compute_eer(cm_score_file, path_to_database):
-    #asv_score_file = os.path.join(path_to_database, 'LA/ASVspoof2019_LA_asv_protocols/ASVspoof2019.LA.asv.eval.gi.trl.scores.txt')
 
     # Fix tandem detection cost function (t-DCF) parameters
     Pspoof = 0.05
-    cost_model = {
-        'Pspoof': Pspoof,  # Prior probability of a spoofing attack
-        'Ptar': (1 - Pspoof) * 0.99,  # Prior probability of target speaker
-        'Pnon': (1 - Pspoof) * 0.01,  # Prior probability of nontarget speaker
-        'Cmiss_asv': 1,  # Cost of ASV system falsely rejecting target speaker
-        'Cfa_asv': 10,  # Cost of ASV system falsely accepting nontarget speaker
-        'Cmiss_cm': 1,  # Cost of CM system falsely rejecting target speaker
-        'Cfa_cm': 10,  # Cost of CM system falsely accepting spoof
-    }
+  
 
     # Load CM scores
     cm_data = np.genfromtxt(cm_score_file, dtype=str)
@@ -100,14 +91,12 @@ def test_model(feat_model_path, loss_model_path, part, add_loss, device,genuine_
     with open(os.path.join(dir_path, f"{dataset_name}_{part}_cm_eer.txt"),  "w") as file:
         # Write the output to the file
         file.write(f"The eer cm is: {eer_cm}\n")
-    # eer_cm, min_tDCF = compute_eer_and_tdcf(os.path.join(dir_path, 'checkpoint_cm_score.txt'),
-    #                                          "E:/AIR-ASVspoof-master/")
+
     return eer_cm
 
 def test(model_dir, add_loss, device):
     model_path = os.path.join(model_dir, "anti-spoofing_lfcc_model.pt")
     loss_model_path = os.path.join(model_dir, "anti-spoofing_loss_model.pt")
-    #test_model(model_path, loss_model_path, "eval", add_loss, device)
     # test_model(model_path, loss_model_path, "dev", add_loss, device,genuine_only = True,asvspoof2019 = True)
     # test_model(model_path, loss_model_path, "dev", add_loss, device,genuine_only = False,asvspoof2019 = True)
     # test_model(model_path, loss_model_path, "train", add_loss, device,genuine_only =True,asvspoof2019 = True)
@@ -204,6 +193,3 @@ if __name__ == "__main__":
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
     args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     test(args.model_dir, args.loss, args.device)
-    # eer_cm_lst, min_tDCF_lst = test_individual_attacks(os.path.join(args.model_dir, 'checkpoint_cm_score.txt'))
-    # print(eer_cm_lst)
-    # print(min_tDCF_lst)
