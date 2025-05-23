@@ -43,7 +43,7 @@ Follow the instructions below to reproduce key experiments from the paper:
   To calculate distances between the generated histograms, run:
 
   ```bash
-  python Histogram_Calculations/caclaute_distances.py
+  python Histogram_Calculations/calculate_distances.py
   ```
 
 * **OCS System Score Evaluation**
