@@ -11,7 +11,7 @@ The code has been migrated from Matlab to Python to improve usability and access
 Make sure you have the following Python packages installed:
 
 ```bash
-pip install numpy pandas scipy scikit-learn matplotlib torch umap-learn confidence_intervals scipy 
+pip install numpy pandas scipy scikit-learn matplotlib torch umap-learn confidence_intervals scipy openpyxl 
 ```
 
 This repository also used on the following repositories:

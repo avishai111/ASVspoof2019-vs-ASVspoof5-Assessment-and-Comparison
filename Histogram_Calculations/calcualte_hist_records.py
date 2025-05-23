@@ -99,15 +99,15 @@ def process_asvspoof_dataset_parallel(audio_folder, metadata_file, output_prefix
 
 
 if __name__ == "__main__":
-    # #Train ASVspoof5
-    # process_asvspoof_dataset_parallel(
-    #     audio_folder='E:/ASVSpoof5/flac_T/',
-    #     metadata_file='E:/ASVSpoof5/cm_protocols/ASVspoof5.train.metadata.txt',
-    #     output_prefix='train_data_ASVSpoof5',
-    #     label_column=5
-    # )
+    #Train ASVspoof5
+    process_asvspoof_dataset_parallel(
+        audio_folder='E:/ASVSpoof5/flac_T/',
+        metadata_file='E:/ASVSpoof5/cm_protocols/ASVspoof5.train.metadata.txt',
+        output_prefix='train_data_ASVSpoof5',
+        label_column=5
+    )
 
-    # Dev ASVspoof5
+    #Dev ASVspoof5
     process_asvspoof_dataset_parallel(
         audio_folder='E:/ASVSpoof5/flac_D/',
         metadata_file='E:/ASVSpoof5/cm_protocols/ASVspoof5.dev.metadata.txt',
@@ -128,7 +128,7 @@ if __name__ == "__main__":
         audio_folder='C:/AsvSpoof/databases/2019/LA/ASVspoof2019_LA_train/flac/',
         metadata_file='C:/AsvSpoof/databases/2019/LA/ASVspoof2019_LA_cm_protocols/with_sex_labels/ASVspoof2019.LA.cm.train.trn.txt',
         output_prefix='train_data_ASVSpoof2019',
-        label_column=5
+        label_column=4
     )
 
     # Dev ASVspoof2019
@@ -136,7 +136,7 @@ if __name__ == "__main__":
         audio_folder='C:/AsvSpoof/databases/2019/LA/ASVspoof2019_LA_dev/flac/',
         metadata_file='C:/AsvSpoof/databases/2019/LA/ASVspoof2019_LA_cm_protocols/with_sex_labels/ASVspoof2019.LA.cm.dev_old_witout_enroll.trl.txt',
         output_prefix='validation_data_ASVSpoof2019',
-        label_column=5
+        label_column=4
     )
 
     # Eval ASVspoof2019
@@ -144,5 +144,5 @@ if __name__ == "__main__":
         audio_folder='C:/AsvSpoof/databases/2019/LA/ASVspoof2019_LA_eval/flac/',
         metadata_file='C:/AsvSpoof/databases/2019/LA/ASVspoof2019_LA_cm_protocols/with_sex_labels/ASVspoof2019.LA.cm.eval_old_witout_enroll.trl.txt',
         output_prefix='eval_data_ASVSpoof2019',
-        label_column=5
+        label_column=4
     )

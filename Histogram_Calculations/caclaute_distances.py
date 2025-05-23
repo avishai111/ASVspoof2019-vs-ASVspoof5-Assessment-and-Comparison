@@ -1,15 +1,15 @@
 import numpy as np
 import pandas as pd
 import scipy.io as sio
-from PmfDist import PmfDist  # You will need to implement or port these functions
-
+from distances_moduls import distances_moduls  # You will need to implement or port these functions
+import os
 # Constants
 num_bins = 2**16
 bin_edges = np.linspace(-1, 1, num_bins)
 
 
 
-def compute_pmf_distances(pmfs: dict, distance_module, output_filename=None):
+def compute_pmf_distances(pmfs: dict, distance_types,output_filename=None):
     """
     Compute distance metrics for PMF pairs using specified distance functions.
 
@@ -22,17 +22,7 @@ def compute_pmf_distances(pmfs: dict, distance_module, output_filename=None):
         pd.DataFrame: A DataFrame with computed distances.
     """
     
-    # Define distance functions
-    distance_types = {
-        'Modified Kolmogorov-Smirnov': distance_module.ks2_variant,
-        'Kullback-Leibler': distance_module.kl_div,
-        'Kullback-Leibler distance': distance_module.kl_dist,
-        'Jensen-Shannon divergence': distance_module.js_div,
-        'chi square': distance_module.chi_sqr,
-        'Histogram Intersection': distance_module.hist_intersection,
-        'Hellinger': distance_module.hellinger,
-        'correlation': distance_module.corr,
-    }
+   
 
     # Compute distances
     results = []
@@ -52,7 +42,7 @@ def compute_pmf_distances(pmfs: dict, distance_module, output_filename=None):
 
     # Save to Excel if requested
     if output_filename:
-        df.to_excel(output_filename, index=False)
+        df.to_csv(output_filename, index=False)
         print(f"Table saved to {output_filename}")
 
     return df
@@ -60,33 +50,88 @@ def compute_pmf_distances(pmfs: dict, distance_module, output_filename=None):
 
 if __name__ == "__main__":
 
+     # Define distance functions
+    # distance_types = {
+    #     'Modified Kolmogorov-Smirnov': distances_moduls.ks2_variant,
+    #     'Kullback-Leibler': distances_moduls.kl_div,
+    #     'Kullback-Leibler distance': distances_moduls.kl_dist,
+    #     'Jensen-Shannon divergence': distances_moduls.js_div,
+    #     'chi square': distances_moduls.chi_sqr,
+    #     'Histogram Intersection': distances_moduls.hist_intersection,
+    #     'Hellinger': distances_moduls.hellinger,
+    #     'correlation': distances_moduls.corr,
+    # }
+    
+    distance_types = {
+        'Symmetric KL': distances_moduls.kl_dist,
+         'Modified Kolmogorov-Smirnov': distances_moduls.ks2_variant,
+        'Hellinger': distances_moduls.hellinger,
+    }
+    
+    TRAIN_FOLDER_DATA_2019 = './ASVspoof2019_train/'
+    DEV_FOLDER_DATA_2019 = './ASVspoof2019_Dev/'
+    Eval_FOLDER_DATA_2019 = './ASVspoof2019_Eval/'
+    TRAIN_FOLDER_DATA_5 = './ASVspoof5_train/'
+    DEV_FOLDER_DATA_5 = './ASVspoof5_Dev/'
+    Eval_FOLDER_DATA_5 = './ASVspoof5_Eval/'
+    
     # Load PMF data from .npy files
     pmfs = {
         'train_2019': (
-            np.load('train_data_pmf_probs_bonafide.npy'),
-            np.load('train_data_pmf_probs_spoofed.npy')
-        ),
-        'validation_2019': (
-            np.load('validation_data_pmf_probs_bonafide.npy'),
-            np.load('validation_data_pmf_probs_spoofed.npy')
-        ),
-        'eval_2019': (
-            np.load('eval_data_pmf_probs_bonafide.npy'),
-            np.load('eval_data_pmf_probs_spoofed.npy')
+            np.load(os.path.join(TRAIN_FOLDER_DATA_2019, 'train_data_ASVspoof2019_pmf_probs_bonafide.npy')),   # Bonafide PMF for ASVspoof2019 training set
+            np.load(os.path.join(TRAIN_FOLDER_DATA_2019, 'train_data_ASVspoof2019_pmf_probs_spoofed.npy'))     # Spoofed PMF for ASVspoof2019 training set
         ),
         'train_5': (
-            np.load('ASVspoof5_train_data_pmf_probs_bonafide.npy'),
-            np.load('ASVspoof5_train_data_pmf_probs_spoofed.npy')
+            np.load(os.path.join(TRAIN_FOLDER_DATA_5, 'train_data_ASVspoof5_pmf_probs_bonafide.npy')),   # Bonafide PMF for ASVspoof5 training set
+            np.load(os.path.join(TRAIN_FOLDER_DATA_5, 'train_data_ASVspoof5_pmf_probs_spoofed.npy'))     # Spoofed PMF for ASVspoof5 training set
         ),
-        'validation_5': (
-            np.load('ASVspoof5_validation_data_pmf_probs_bonafide.npy'),
-            np.load('ASVspoof5_validation_data_pmf_probs_spoofed.npy')
+        'validation_2019': (
+            np.load(os.path.join(DEV_FOLDER_DATA_2019, 'validation_data_ASVspoof2019_pmf_probs_bonafide.npy')),  # Bonafide PMF for ASVspoof2019 dev set
+            np.load(os.path.join(DEV_FOLDER_DATA_2019, 'validation_data_ASVspoof2019_pmf_probs_spoofed.npy'))    # Spoofed PMF for ASVspoof2019 dev set
+        ),
+         'validation_5': (
+            np.load(os.path.join(DEV_FOLDER_DATA_5, 'validation_data_ASVspoof5_pmf_probs_bonafide.npy')),  # Bonafide PMF for ASVspoof5 dev set
+            np.load(os.path.join(DEV_FOLDER_DATA_5, 'validation_data_ASVspoof5_pmf_probs_spoofed.npy'))    # Spoofed PMF for ASVspoof5 dev set
+        ),
+        'eval_2019': (
+            np.load(os.path.join(Eval_FOLDER_DATA_2019, 'eval_data_ASVspoof2019_pmf_probs_bonafide.npy')),     # Bonafide PMF for ASVspoof2019 eval set
+            np.load(os.path.join(Eval_FOLDER_DATA_2019, 'eval_data_ASVspoof2019_pmf_probs_spoofed.npy'))       # Spoofed PMF for ASVspoof2019 eval set
         ),
         'eval_5': (
-            np.load('ASVspoof5_eval_data_pmf_probs_bonafide.npy'),
-            np.load('ASVspoof5_eval_data_pmf_probs_spoofed.npy')
+            np.load(os.path.join(Eval_FOLDER_DATA_5, 'eval_data_ASVspoof5_pmf_probs_bonafide.npy')),    # Bonafide PMF for ASVspoof5 eval set
+            np.load(os.path.join(Eval_FOLDER_DATA_5, 'eval_data_ASVspoof5_pmf_probs_spoofed.npy'))      # Spoofed PMF for ASVspoof5 eval set
         ),
     }
 
     # Compute distances and save to Excel
-    df = compute_pmf_distances(pmfs, PmfDist, output_filename='distance_output.xlsx')
+    df = compute_pmf_distances(pmfs, distance_types, output_filename='Table2.csv')
+    
+    
+    # Load PMF data from .npy files
+    pmfs = {
+        
+        'bonafide_train_5': (
+            np.load(os.path.join(TRAIN_FOLDER_DATA_2019, 'train_data_ASVspoof2019_pmf_probs_bonafide.npy')), # Bonafide PMF for ASVspoof2019 training set
+            np.load(os.path.join(TRAIN_FOLDER_DATA_5, 'train_data_ASVspoof5_pmf_probs_bonafide.npy')),   # Bonafide PMF for ASVspoof5 training set
+        ),
+        'bonafide_validation_2019': (
+            np.load(os.path.join(TRAIN_FOLDER_DATA_2019, 'train_data_ASVspoof2019_pmf_probs_bonafide.npy')), # Bonafide PMF for ASVspoof2019 training set
+            np.load(os.path.join(DEV_FOLDER_DATA_2019, 'validation_data_ASVspoof2019_pmf_probs_bonafide.npy'))  # Bonafide PMF for ASVspoof2019 dev set
+        ),
+         'bonafide_validation_5': (
+            np.load(os.path.join(TRAIN_FOLDER_DATA_2019, 'train_data_ASVspoof2019_pmf_probs_bonafide.npy')), # Bonafide PMF for ASVspoof2019 training set
+            np.load(os.path.join(DEV_FOLDER_DATA_5, 'validation_data_ASVspoof5_pmf_probs_bonafide.npy'))  # Bonafide PMF for ASVspoof5 dev set
+        ),
+        'bonafide_eval_2019': (
+            np.load(os.path.join(TRAIN_FOLDER_DATA_2019, 'train_data_ASVspoof2019_pmf_probs_bonafide.npy')), # Bonafide PMF for ASVspoof2019 training set
+            np.load(os.path.join(Eval_FOLDER_DATA_2019, 'eval_data_ASVspoof2019_pmf_probs_bonafide.npy'))     # Bonafide PMF for ASVspoof2019 eval set
+        ),
+        'bonafide_eval_5': (
+            np.load(os.path.join(TRAIN_FOLDER_DATA_2019, 'train_data_ASVspoof2019_pmf_probs_bonafide.npy')), # Bonafide PMF for ASVspoof2019 training set
+            np.load(os.path.join(Eval_FOLDER_DATA_5, 'eval_data_ASVspoof5_pmf_probs_bonafide.npy'))   # Bonafide PMF for ASVspoof5 eval set
+        ),
+    }
+
+    # Compute distances and save to Excel
+    df = compute_pmf_distances(pmfs, distance_types, output_filename='Table3.csv')
+
