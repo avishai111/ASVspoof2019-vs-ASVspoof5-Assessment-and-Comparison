@@ -16,7 +16,7 @@ pip install numpy pandas scipy scikit-learn matplotlib torch umap-learn confiden
 This repository also used on the following repositories:
 
 * [**One-Class Learning Towards Synthetic Voice Spoofing Detection**](https://github.com/yzyouzhang/AIR-ASVspoof):The base code for One Class Softmax (OCS) system. 
-* [**Confidence intervals for evaluation in machine learning**](https://github.com/luferrer/ConfidenceIntervals): The repository provides a simple implementation of the bootstrapping approach to compute confidence intervals for evaluation in machine learning. 
+* [**Confidence intervals for evaluation in machine learning**](https://github.com/luferrer/ConfidenceIntervals): The repository provides a implementation of the bootstrapping approach to compute confidence intervals for evaluation in machine learning. 
 
 ---
 
@@ -25,7 +25,7 @@ This repository also used on the following repositories:
 Follow the instructions below to reproduce key experiments from the paper:
 
 * **UMAP Visualization of Time Embeddings**
-  To run the UMAP experiments on time-based embeddings, first [download the required data from Google Drive](https://drive.google.com/drive/folders/1p3eooxAqRpEYxiD1kpLw-7bHk1FtO5aX?usp=drive_link). Then execute:
+  To run the UMAP experiments on time-based embeddings, first [download the required data from Google Drive](https://drive.google.com/file/d/1TTY5BggaaUn4laQr2TmefT_83FoJBaf7/view?usp=drive_link). Then execute:
 
   ```bash
   python PMF_BASED_Embeddings_Umap/main_umap_2D.py
