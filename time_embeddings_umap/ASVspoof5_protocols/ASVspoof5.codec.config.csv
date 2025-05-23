@@ -1,0 +1,86 @@
+ID,CODEC,CODEC_Q,Bitrate(kbps)
+C1,opus_wb,1,6
+C1,opus_wb,2,12
+C1,opus_wb,3,18
+C1,opus_wb,4,24
+C1,opus_wb,5,30
+C2,arm_wb,1,6.6
+C2,arm_wb,2,8.85
+C2,arm_wb,3,14.25
+C2,arm_wb,4,18.25
+C2,arm_wb,5,23.05
+C3,speex_wb,1,5.75
+C3,speex_wb,2,9.8
+C3,speex_wb,3,16.8
+C3,speex_wb,4,23.8
+C3,speex_wb,5,34.2
+C4,encodec_wb,1,1.5
+C4,encodec_wb,2,3
+C4,encodec_wb,3,6
+C4,encodec_wb,4,12
+C4,encodec_wb,5,24
+C5,mp3_wb,1,45-85
+C5,mp3_wb,2,80-120
+C5,mp3_wb,3,120-150
+C5,mp3_wb,4,170-210
+C5,mp3_wb,5,220-260
+C6,m4a_wb,1,16
+C6,m4a_wb,2,32
+C6,m4a_wb,3,64
+C6,m4a_wb,4,96
+C6,m4a_wb,5,128
+C7,mp3_encodec_wb,1,See combination below
+C7,mp3_encodec_wb,2,See combination below
+C7,mp3_encodec_wb,3,See combination below
+C7,mp3_encodec_wb,4,See combination below
+C7,mp3_encodec_wb,5,See combination below
+C8,opus_nb,1,4
+C8,opus_nb,2,8
+C8,opus_nb,3,12
+C8,opus_nb,4,16
+C8,opus_nb,5,20
+C9,arm_nb,1,4.75
+C9,arm_nb,2,6.7
+C9,arm_nb,3,8.85
+C9,arm_nb,4,10.2
+C9,arm_nb,5,12.2
+C10,speex_nb,1,3.95
+C10,speex_nb,2,5.95
+C10,speex_nb,3,11
+C10,speex_nb,4,18.2
+C10,speex_nb,5,24.6
+C11,MST ,1,-
+C11,MST_nc ,2,-
+C11,PF45G_bluetooth ,3,-
+C11,RN8P_bluetooth ,4,-
+C11,RN8P_cable ,5,-
+C11,SGA12_bluetooth ,6,-
+C11,SGA12_cable ,7,-
+C11,SGS23U_bluetooth ,8,-
+,,,
+C7 CODEC_Q,MP3 quality,encodec quality,
+1,1,1,
+2,1,2,
+2,1,3,
+2,1,4,
+3,1,5,
+2,2,1,
+2,2,2,
+2,2,3,
+3,2,4,
+4,2,5,
+2,3,1,
+2,3,2,
+3,3,3,
+4,3,4,
+4,3,5,
+2,4,1,
+3,4,2,
+4,4,3,
+4,4,4,
+4,4,5,
+3,5,1,
+4,5,2,
+4,5,3,
+4,5,4,
+5,5,5,
