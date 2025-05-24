@@ -296,4 +296,124 @@ class class_time_embeddings_umap:
 
             self.umap_eval = self.umap_train
        
+
+
+
+
+def save_npz_file(filename, data):
+    """
+    Save a dictionary to a .npz file.
+
+    Parameters:
+    filename (str): The name of the file to save the data to.
+    data (dict): The dictionary containing the data to save.
+
+    Returns:
+    None
+    """
+
+    np.savez(filename, **data)
+
+
+if __name__ == "__main__":
     
+    # This main script loads a .pkl file containing the pre-trained UMAP model and applies it to transform
+    # the time embeddings into 2D space. After the transformation, it saves the 2D embeddings into a new .npz file.
+    # The original .pkl file was converted to .npz format to make loading the data easier.
+
+    time_emb = pickle.load(open('./time_emb.pkl', 'rb'))
+    
+    
+    time_embed_train_2019_samples_2D = time_emb.umap_train.transform(time_emb.embedded_groups_1_1)
+    print("Time embeddings for ASVspoof2019 training samples transformed to 2D.")
+    
+    time_embed_dev_2019_samples_2D = time_emb.umap_train.transform(time_emb.embedded_groups_1_2)
+    
+    time_embed_eval_2019_samples_2D = time_emb.umap_train.transform(time_emb.embedded_groups_1_3)
+    
+    time_emb.time_embed_train_2019_samples_2D = time_embed_train_2019_samples_2D
+    
+    time_emb.time_embed_dev_2019_samples_2D = time_embed_dev_2019_samples_2D
+    
+    time_emb.time_embed_eval_2019_samples_2D = time_embed_eval_2019_samples_2D
+    
+    time_embed_train_05_samples_2D =  time_emb.umap_train.transform(time_emb.embedded_groups_1_1_asvspoof5) 
+    print("Time embeddings for ASVspoof5 training samples transformed to 2D.")
+    
+    time_embed_dev_05_samples_2D =  time_emb.umap_train.transform(time_emb.embedded_groups_1_2_asvspoof5) 
+    
+    time_embed_eval_05_samples_2D =  time_emb.umap_train.transform(time_emb.embedded_groups_1_3_asvspoof5) 
+    
+    time_emb.time_embed_train_05_samples_2D = time_embed_train_05_samples_2D
+    
+    time_emb.time_embed_dev_05_samples_2D = time_embed_dev_05_samples_2D
+    
+    time_emb.time_embed_eval_05_samples_2D = time_embed_eval_05_samples_2D
+    
+    data_to_save = {
+    # Combined spoofed labels
+    "chosen_labels_1_1_is_spoofed": time_emb.chosen_labels_1_1_is_spoofed,
+    "chosen_labels_2_1_is_spoofed": time_emb.chosen_labels_2_1_is_spoofed,
+    "chosen_labels_3_1_is_spoofed": time_emb.chosen_labels_3_1_is_spoofed,
+
+    # Combined numeric labels
+    "chosen_labels_numeric_1_1": time_emb.chosen_labels_numeric_1_1,
+    "chosen_labels_numeric_2_1": time_emb.chosen_labels_numeric_2_1,
+    "chosen_labels_numeric_3_1": time_emb.chosen_labels_numeric_3_1,
+
+    # Combined attack logical
+    "chosen_labels_1_1_attack_logical": time_emb.chosen_labels_1_1_attack_logical.to_numpy(),
+    "chosen_labels_2_1_attack_logical": time_emb.chosen_labels_2_1_attack_logical.to_numpy(),
+    "chosen_labels_3_1_attack_logical": time_emb.chosen_labels_3_1_attack_logical.to_numpy(),
+
+    # Speaker ID and name
+    "chosen_labels_1_1_speaker_id": time_emb.chosen_labels_1_1_speaker_id,
+    "chosen_labels_2_1_speaker_id": time_emb.chosen_labels_2_1_speaker_id,
+    "chosen_labels_3_1_speaker_id": time_emb.chosen_labels_3_1_speaker_id,
+    "chosen_labels_1_1_name": time_emb.chosen_labels_1_1_name,
+    "chosen_labels_2_1_name": time_emb.chosen_labels_2_1_name,
+    "chosen_labels_3_1_name": time_emb.chosen_labels_3_1_name,
+
+    # Combined sex labels
+    "chosen_labels_1_1_sex": time_emb.chosen_labels_1_1_sex.to_numpy(),
+    "chosen_labels_2_1_sex": time_emb.chosen_labels_2_1_sex.to_numpy(),
+    "chosen_labels_3_1_sex": time_emb.chosen_labels_3_1_sex.to_numpy(),
+
+    # Mapped color labels
+    "chosen_labels_1_1_attack_logical_mapping": time_emb.chosen_labels_1_1_attack_logical_mapping.to_numpy(),
+    "chosen_labels_2_1_attack_logical_mapping": time_emb.chosen_labels_2_1_attack_logical_mapping.to_numpy(),
+    "chosen_labels_3_1_attack_logical_mapping": time_emb.chosen_labels_3_1_attack_logical_mapping.to_numpy(),
+
+    # ASVspoof5 spoofed labels
+    "chosen_labels_1_1_is_spoofed_asvspoof5": time_emb.chosen_labels_1_1_is_spoofed_asvspoof5,
+    "chosen_labels_2_1_is_spoofed_asvspoof5": time_emb.chosen_labels_2_1_is_spoofed_asvspoof5,
+    "chosen_labels_3_1_is_spoofed_asvspoof5": time_emb.chosen_labels_3_1_is_spoofed_asvspoof5,
+
+    # ASVspoof5 attack logical
+    "chosen_labels_1_1_attack_logical_asvspoof5": time_emb.chosen_labels_1_1_attack_logical_asvspoof5.to_numpy(),
+    "chosen_labels_2_1_attack_logical_asvspoof5": time_emb.chosen_labels_2_1_attack_logical_asvspoof5.to_numpy(),
+    "chosen_labels_3_1_attack_logical_asvspoof5": time_emb.chosen_labels_3_1_attack_logical_asvspoof5.to_numpy(),
+
+    # ASVspoof5 sex
+    "chosen_labels_1_1_sex_asvspoof5": time_emb.chosen_labels_1_1_sex_asvspoof5.to_numpy(),
+    "chosen_labels_2_1_sex_asvspoof5": time_emb.chosen_labels_2_1_sex_asvspoof5.to_numpy(),
+    "chosen_labels_3_1_sex_asvspoof5": time_emb.chosen_labels_3_1_sex_asvspoof5.to_numpy(),
+
+    # ASVspoof5 color mappings
+    "chosen_labels_1_1_attack_logical_mapping_asvspoof5": time_emb.chosen_labels_1_1_attack_logical_mapping_asvspoof5.to_numpy(),
+    "chosen_labels_2_1_attack_logical_mapping_asvspoof5": time_emb.chosen_labels_2_1_attack_logical_mapping_asvspoof5.to_numpy(),
+    "chosen_labels_3_1_attack_logical_mapping_asvspoof5": time_emb.chosen_labels_3_1_attack_logical_mapping_asvspoof5.to_numpy(),
+
+    # UMAP-transformed 2D embeddings for ASVspoof2019
+    "time_embed_train_2019_samples_2D": time_emb.time_embed_train_2019_samples_2D,
+    "time_embed_dev_2019_samples_2D": time_emb.time_embed_dev_2019_samples_2D,
+    "time_embed_eval_2019_samples_2D": time_emb.time_embed_eval_2019_samples_2D,
+
+    # UMAP-transformed 2D embeddings for ASVspoof5
+    "time_embed_train_05_samples_2D": time_emb.time_embed_train_05_samples_2D,
+    "time_embed_dev_05_samples_2D": time_emb.time_embed_dev_05_samples_2D,
+    "time_embed_eval_05_samples_2D": time_emb.time_embed_eval_05_samples_2D
+    }
+
+    # Call the save function
+    save_npz_file("time_embeddings_data.npz", data_to_save)

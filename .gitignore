@@ -172,4 +172,8 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Python data files
 *.pkl
+*.pth
+*.npz

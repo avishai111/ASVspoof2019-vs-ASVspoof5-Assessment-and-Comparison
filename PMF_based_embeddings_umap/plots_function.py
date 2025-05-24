@@ -7,14 +7,13 @@ import scipy
 import os
 
 #plotting_genuine for the training/dev/eval set.
-def plotting_genuine(umap_train, embedded_groups, chosen_labels_sex, chosen_labels_logical_mapping, 
+def plotting_genuine(embeddings, chosen_labels_sex, chosen_labels_logical_mapping, 
                             plot_title='Train embeddings (Only Bonafide)', gender='both', frontsize=20):
     """
     Plot UMAP embeddings for the genuine samples.
 
     Parameters:
-        umap_train: Fitted UMAP model.
-        embedded_groups: NumPy array of embeddings.
+        embeddings: NumPy array of embeddings after umap.
         chosen_labels_sex: Array indicating the gender ('male' or 'female') for each embedding.
         chosen_labels_logical_mapping: Array indicating if an embedding is genuine (e.g., #0000FF for genuine).
         plot_title: Title of the plot (default: 'Train embeddings (Only Genuine)').
@@ -30,9 +29,7 @@ def plotting_genuine(umap_train, embedded_groups, chosen_labels_sex, chosen_labe
     genuine_filter = chosen_labels_logical_mapping == "#0000FF"  # Assuming #0000FF indicates genuine
 
     if gender == 'male':
-        embeddings = umap_train.transform(
-            embedded_groups[(chosen_labels_sex == 'male') & genuine_filter]
-        )
+        embeddings = embeddings[(chosen_labels_sex == 'male') & genuine_filter]
         ax.scatter(
             embeddings[:, 0], embeddings[:, 1],
             c='blue',  # Use a single color for genuine
@@ -41,9 +38,7 @@ def plotting_genuine(umap_train, embedded_groups, chosen_labels_sex, chosen_labe
         combined_embeddings = embeddings
 
     elif gender == 'female':
-        embeddings = umap_train.transform(
-            embedded_groups[(chosen_labels_sex == 'female') & genuine_filter]
-        )
+        embeddings = embeddings[(chosen_labels_sex == 'female') & genuine_filter]
         ax.scatter(
             embeddings[:, 0], embeddings[:, 1],
             c='green',  # Use a single color for genuine
@@ -52,12 +47,8 @@ def plotting_genuine(umap_train, embedded_groups, chosen_labels_sex, chosen_labe
         combined_embeddings = embeddings
 
     elif gender == 'both':
-        male_embeddings = umap_train.transform(
-            embedded_groups[(chosen_labels_sex == 'male') & genuine_filter]
-        )
-        female_embeddings = umap_train.transform(
-            embedded_groups[(chosen_labels_sex == 'female') & genuine_filter]
-        )
+        male_embeddings = embeddings[(chosen_labels_sex == 'male') & genuine_filter]
+        female_embeddings = embeddings[(chosen_labels_sex == 'female') & genuine_filter]
         ax.scatter(
             male_embeddings[:, 0], male_embeddings[:, 1],
             c='blue',  # Use a single color for genuine
@@ -87,15 +78,14 @@ def plotting_genuine(umap_train, embedded_groups, chosen_labels_sex, chosen_labe
 
 
 #plotting_genuine_without_codecs for the eval set.
-def plotting_genuine_by_without_codec(umap_train, embedded_groups, chosen_labels_sex, chosen_labels_logical_mapping, 
+def plotting_genuine_by_without_codec(embeddings, chosen_labels_sex, chosen_labels_logical_mapping, 
                               chosen_labels_codec, codec_list, plot_title='Train embeddings (Only Genuine by Codec)', 
                               gender='both', frontsize=20):
     """
     Plot UMAP embeddings for genuine without codecs for the ASVspoof05 eval set.
 
     Parameters:
-        umap_train: Fitted UMAP model.
-        embedded_groups: NumPy array of embeddings.
+        embeddings: NumPy array of embeddings after umap.
         chosen_labels_sex: Array indicating the gender ('male' or 'female') for each embedding.
         chosen_labels_logical_mapping: Array indicating if an embedding is genuine (e.g., #0000FF for genuine).
         chosen_labels_codec: Array indicating the codec type for each embedding.
@@ -119,12 +109,9 @@ def plotting_genuine_by_without_codec(umap_train, embedded_groups, chosen_labels
                 codec_filter = chosen_labels_codec == codec
 
                 if gender == 'both':
-                    male_embeddings = umap_train.transform(
-                    embedded_groups[(chosen_labels_sex == 'male') & genuine_filter & codec_filter]
-                    )
-                    female_embeddings = umap_train.transform(
-                        embedded_groups[(chosen_labels_sex == 'female') & genuine_filter & codec_filter]
-                    )
+                    male_embeddings = embeddings[(chosen_labels_sex == 'male') & genuine_filter & codec_filter]
+                    female_embeddings = embeddings[(chosen_labels_sex == 'female') & genuine_filter & codec_filter]
+    
                     ax.scatter(
                         male_embeddings[:, 0], male_embeddings[:, 1],
                         c='blue',  # Use a single color for genuine
@@ -153,6 +140,3 @@ def plotting_genuine_by_without_codec(umap_train, embedded_groups, chosen_labels
         plt.show()
 
         return combined_embeddings
-    
-    
-
