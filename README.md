@@ -1,5 +1,10 @@
 # 📄 [ASVspoof2019 vs. ASVspoof5: Assessment and Comparison](https://arxiv.org/abs/2505.15911)
 
+[![DOI](https://zenodo.org/badge/989175394.svg)](https://doi.org/10.5281/zenodo.15502715)
+
+[![arXiv](https://img.shields.io/badge/arXiv-2505.15911-b31b1b.svg)](https://doi.org/10.48550/arXiv.2505.15911)
+
+
 This repository contains the official implementation of the paper ["ASVspoof2019 vs. ASVspoof5: Assessment and Comparison"](https://arxiv.org/abs/2505.15911).
 
 In this work, we conduct a comprehensive assessment and comparison of two benchmark databases (ASVspoof2019 and ASVspoof5) used for developing spoofing countermeasures for automatic speaker verification systems. 
