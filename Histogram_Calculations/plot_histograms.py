@@ -53,31 +53,27 @@ def plot_precomputed_pmfs(pmf_a, pmf_b, label_a, label_b, title, bins=NUM_BINS, 
   
 
 
-
-
-
-
 if __name__ == "__main__":
    
     # === ASVspoof ASVspoof5 === 
     pmf_probs_bonafide_train_ASVspoof05 = np.load('./ASVspoof5_train/train_data_ASVSpoof5_pmf_probs_bonafide.npy')
     pmf_probs_spoofed_train_ASVspoof05  = np.load('./ASVspoof5_train/train_data_ASVSpoof5_pmf_probs_spoofed.npy')
 
-    pmf_probs_bonafide_dev_ASVspoof05 = np.load('./ASVspoof5_dev/dev_data_ASVSpoof5_pmf_probs_bonafide.npy')
-    pmf_probs_spoofed_dev_ASVspoof05  = np.load('./ASVspoof5_dev/dev_data_ASVSpoof5_pmf_probs_spoofed.npy')
+    pmf_probs_bonafide_dev_ASVspoof05 = np.load('./ASVspoof5_Dev/validation_data_ASVSpoof5_pmf_probs_bonafide.npy')
+    pmf_probs_spoofed_dev_ASVspoof05  = np.load('./ASVspoof5_Dev/validation_data_ASVSpoof5_pmf_probs_spoofed.npy')
 
-    pmf_probs_bonafide_eval_ASVspoof05 = np.load('./ASVspoof5_eval/eval_data_ASVSpoof5_pmf_probs_bonafide.npy')
-    pmf_probs_spoofed_eval_ASVspoof05  = np.load('./ASVspoof5_eval/eval_data_ASVSpoof5_pmf_probs_spoofed.npy')
+    pmf_probs_bonafide_eval_ASVspoof05 = np.load('./ASVspoof5_Eval/eval_data_ASVSpoof5_pmf_probs_bonafide.npy')
+    pmf_probs_spoofed_eval_ASVspoof05  = np.load('./ASVspoof5_Eval/eval_data_ASVSpoof5_pmf_probs_spoofed.npy')
 
     # === ASVspoof 2019 ===
     pmf_probs_bonafide_train_ASVspoof2019 = np.load('./ASVspoof2019_train/train_data_ASVSpoof2019_pmf_probs_bonafide.npy')
     pmf_probs_spoofed_train_ASVspoof2019  = np.load('./ASVspoof2019_train/train_data_ASVSpoof2019_pmf_probs_spoofed.npy')
 
-    pmf_probs_bonafide_dev_ASVspoof2019 = np.load('./ASVspoof2019_dev/dev_data_ASVSpoof2019_pmf_probs_bonafide.npy')
-    pmf_probs_spoofed_dev_ASVspoof2019  = np.load('./ASVspoof2019_dev/dev_data_ASVSpoof2019_pmf_probs_spoofed.npy')
+    pmf_probs_bonafide_dev_ASVspoof2019 = np.load('./ASVspoof2019_Dev/validation_data_ASVSpoof2019_pmf_probs_bonafide.npy')
+    pmf_probs_spoofed_dev_ASVspoof2019  = np.load('./ASVspoof2019_Dev/validation_data_ASVSpoof2019_pmf_probs_spoofed.npy')
 
-    pmf_probs_bonafide_eval_ASVspoof2019 = np.load('./ASVspoof2019_eval/eval_data_ASVSpoof2019_pmf_probs_bonafide.npy')
-    pmf_probs_spoofed_eval_ASVspoof2019  = np.load('./ASVspoof2019_eval/eval_data_ASVSpoof2019_pmf_probs_spoofed.npy')
+    pmf_probs_bonafide_eval_ASVspoof2019 = np.load('./ASVspoof2019_Eval/eval_data_ASVSpoof2019_pmf_probs_bonafide.npy')
+    pmf_probs_spoofed_eval_ASVspoof2019  = np.load('./ASVspoof2019_Eval/eval_data_ASVSpoof2019_pmf_probs_spoofed.npy')
 
      # === ASVspoof05 ===
 
@@ -87,7 +83,8 @@ if __name__ == "__main__":
         pmf_probs_spoofed_train_ASVspoof05,
         label_a='ASVspoof05 Train Bonafide',
         label_b='ASVspoof05 Train Spoofed',
-        title='PMF of bonafide vs spoof in the train ASVspoof05 database'
+        title='PMF of bonafide vs spoof in the train ASVspoof05 database',
+        save_path='./Figures/pmf_train_ASVspoof5.png'
     )
 
     # Dev
@@ -96,7 +93,8 @@ if __name__ == "__main__":
         pmf_probs_spoofed_dev_ASVspoof05,
         label_a='ASVspoof05 Dev Bonafide',
         label_b='ASVspoof05 Dev Spoofed',
-        title='PMF of bonafide vs spoof in the dev ASVspoof05 database'
+        title='PMF of bonafide vs spoof in the dev ASVspoof05 database',
+        save_path='./Figures/pmf_dev_ASVspoof5.png'
     )
 
     # Eval
@@ -105,9 +103,9 @@ if __name__ == "__main__":
         pmf_probs_spoofed_eval_ASVspoof05,
         label_a='ASVspoof05 Eval Bonafide',
         label_b='ASVspoof05 Eval Spoofed',
-        title='PMF of bonafide vs spoof in the eval ASVspoof05 database'
+        title='PMF of bonafide vs spoof in the eval ASVspoof05 database',
+        save_path='./Figures/pmf_eval_ASVspoof5.png'
     )
-
 
 
     # === ASVspoof2019 ===
@@ -118,7 +116,8 @@ if __name__ == "__main__":
         pmf_probs_spoofed_train_ASVspoof2019,
         label_a='ASVspoof2019 Train Bonafide',
         label_b='ASVspoof2019 Train Spoofed',
-        title='PMF of bonafide vs spoof in the train ASVspoof2019 database'
+        title='PMF of bonafide vs spoof in the train ASVspoof2019 database',
+        save_path='./Figures/pmf_train_ASVspoof2019.png'
     )
 
     # Dev
@@ -127,7 +126,8 @@ if __name__ == "__main__":
         pmf_probs_spoofed_dev_ASVspoof2019,
         label_a='ASVspoof2019 Dev Bonafide',
         label_b='ASVspoof2019 Dev Spoofed',
-        title='PMF of bonafide vs spoof in the dev ASVspoof2019 database'
+        title='PMF of bonafide vs spoof in the dev ASVspoof2019 database',
+        save_path='./Figures/pmf_dev_ASVspoof2019.png'
     )
 
     # Eval
@@ -136,12 +136,8 @@ if __name__ == "__main__":
         pmf_probs_spoofed_eval_ASVspoof2019,
         label_a='ASVspoof2019 Eval Bonafide',
         label_b='ASVspoof2019 Eval Spoofed',
-        title='PMF of bonafide vs spoof in the eval ASVspoof2019 database'
+        title='PMF of bonafide vs spoof in the eval ASVspoof2019 database',
+        save_path='./Figures/pmf_eval_ASVspoof2019.png'
     )
 
-   
 
-    
-
-
-   
