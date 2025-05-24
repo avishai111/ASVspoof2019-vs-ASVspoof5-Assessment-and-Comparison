@@ -4,7 +4,7 @@ This repository contains the official implementation of the paper ["ASVspoof2019
 
 In this work, we conduct a comprehensive evaluation and comparison of two benchmark datasets used developing spoofing countermeasures for automatic speaker verification systems: ASVspoof2019 and ASVspoof5. 
 
-The code has been migrated from Matlab to Python to improve usability and accessibility. If you encounter any issues while using the repo, feel free to sent email [Avishai Weizman](mailto:wavishay@post.bgu.ac.il).
+The code has been migrated from Matlab to Python to improve usability and accessibility. If you encounter any issues while using the repo, feel free to contact [Avishai Weizman](mailto:wavishay@post.bgu.ac.il).
 
 ## 📦 Dependencies
 

@@ -3,19 +3,11 @@ import numpy as np
 import soundfile as sf
 from tqdm import tqdm
 from concurrent.futures import ProcessPoolExecutor
-
-
-import os
-import numpy as np
-import soundfile as sf
-from tqdm import tqdm
-from concurrent.futures import ProcessPoolExecutor
 from itertools import islice
-
 
 def process_file(args):
     """
-    Process a single audio file to compute histogram counts.
+    Process a single audio file to compute PMF histogram.
     """
     file_path, label, num_bins = args
     if not os.path.isfile(file_path):
@@ -84,7 +76,7 @@ def process_asvspoof_dataset_parallel(audio_folder, metadata_file, output_prefix
                 else:
                     print(f"Unknown label: {label}")
 
-        tqdm.write(f"✅ Processed {processed}/{total_files} files...")
+        tqdm.write(f"Processed {processed}/{total_files} files...")
 
     # Normalize to PMF
     pmf_probs_bonafide = pmf_counts_bonafide / total_samples_bonafide if total_samples_bonafide > 0 else np.zeros(num_bins)
@@ -95,7 +87,7 @@ def process_asvspoof_dataset_parallel(audio_folder, metadata_file, output_prefix
     np.save(f"{output_prefix}_pmf_probs_spoofed.npy", pmf_probs_spoofed)
     np.save(f"{output_prefix}_bin_edges.npy", bin_edges)
 
-    print(f"\n✅ Saved .npy files with prefix: {output_prefix}")
+    print(f"\n Saved .npy files with prefix: {output_prefix}")
 
 
 if __name__ == "__main__":

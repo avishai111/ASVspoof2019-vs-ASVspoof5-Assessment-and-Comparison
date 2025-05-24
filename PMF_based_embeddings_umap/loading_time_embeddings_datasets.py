@@ -14,7 +14,7 @@ def read_ASVSpoof5_protocol(protocol_path):
     protocol = protocol.drop(columns=['TMP'])
     return protocol
 
-
+#loading the all data for loading the  PMF-based embeddings in ASVspoof05
 def load_data_all_ASVSpoof5(data_path,include_eval=True,include_dev = True):
     chosen_labels_numeric_1_1,chosen_labels_numeric_2_1,chosen_labels_numeric_3_1 = pd.Series([]),pd.Series([]),pd.Series([])
     
@@ -116,7 +116,7 @@ def load_data_all_ASVSpoof5(data_path,include_eval=True,include_dev = True):
             
             
 
-#loading the male data
+#loading the male data for loading the  PMF-based embeddings for male gender in ASVspoof2019
 def load_data_male(data_path):
     embedded_groups_1_1 = scipy.io.loadmat(os.path.join(data_path,'male_embedded_groups_1_1.mat'))['embedded_groups_1_1'];
     embedded_groups_1_2 = scipy.io.loadmat(os.path.join(data_path,'male_embedded_groups_2_1.mat'))['embedded_groups_2_1'];
@@ -178,7 +178,7 @@ def load_data_male(data_path):
     
     return  embedded_groups_1_1,embedded_groups_1_2,embedded_groups_1_3,chosen_labels_1_1_is_spoofed,chosen_labels_2_1_is_spoofed,chosen_labels_3_1_is_spoofed,chosen_labels_numeric_1_1,chosen_labels_numeric_2_1,chosen_labels_numeric_3_1,chosen_labels_1_1_attack_logical,chosen_labels_2_1_attack_logical,chosen_labels_3_1_attack_logical,chosen_labels_1_1_name,chosen_labels_2_1_name,chosen_labels_3_1_name,chosen_labels_1_1_speaker_id,chosen_labels_2_1_speaker_id,chosen_labels_3_1_speaker_id,male_chosen_labels_1_1_sex,male_chosen_labels_2_1_sex,male_chosen_labels_3_1_sex   
 
-#loading the female data
+#loading the male data for loading the PMF-based embeddings for female gender in ASVspoof2019
 def load_data_female(data_path):
     embedded_groups_1_1 = scipy.io.loadmat(os.path.join(data_path,'female_embedded_groups_1_1.mat'))['embedded_groups_1_1'];
     embedded_groups_1_2 = scipy.io.loadmat(os.path.join(data_path,'female_embedded_groups_2_1.mat'))['embedded_groups_2_1'];

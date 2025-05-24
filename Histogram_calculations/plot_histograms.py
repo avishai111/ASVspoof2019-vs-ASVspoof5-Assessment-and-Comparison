@@ -12,16 +12,16 @@ axis_fontsize = 36
 
 def plot_precomputed_pmfs(pmf_a, pmf_b, label_a, label_b, title, bins=NUM_BINS, save_path=None):
     """
-    Plot two precomputed PMFs as filled area plots for visual comparison.
+    Plot two precomputed PMFs.
 
     Parameters:
-    - pmf_a: np.ndarray — PMF values A
-    - pmf_b: np.ndarray — PMF values B
-    - label_a: str — legend label for A
-    - label_b: str — legend label for B
-    - title: str — plot title
-    - bins: int — number of bins (default: 65536)
-    - save_path: str — if provided, saves the figure to this path
+    - pmf_a: np.ndarray — PMF values A.
+    - pmf_b: np.ndarray — PMF values B.
+    - label_a: str — legend label for A.
+    - label_b: str — legend label for B.
+    - title: str — plot title.
+    - bins: int — number of bins (default: 2**16).
+    - save_path: str — if provided, saves the figure to this path.
     """
     assert len(pmf_a) == bins and len(pmf_b) == bins, "PMF arrays must match bin count."
 

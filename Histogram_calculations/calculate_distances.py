@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import scipy.io as sio
-from Histogram_calculations.measures_class import measures_class  
+from Histogram_calculations.similarity_measures_class import similarity_measures_class  
 import os
 # Constants
 num_bins = 2**16
@@ -9,25 +9,25 @@ bin_edges = np.linspace(-1, 1, num_bins)
 
 
 
-def compute_pmf_distances(pmfs: dict, distance_types,output_filename=None):
+def compute_pmf_similarity_measures(pmfs: dict, similarity_measures_types : dict,output_filename: str = None ):
     """
-    Compute distance metrics for PMF pairs using specified distance functions.
+    Compute similarity measures metrics for PMF pairs using specified similarity measures functions.
 
     Args:
         pmfs (dict): A dictionary with keys as labels and values as (pmf1, pmf2) tuples.
-        distance_module (class): A class containing static distance methods.
+        similarity_measures_types (dict): A class containing static similarity measures methods.
         output_filename (str, optional): Path to save the result as an Excel file.
 
     Returns:
-        pd.DataFrame: A DataFrame with computed distances.
+        pd.DataFrame: A DataFrame with computed similarity measures.
     """
     
    
 
-    # Compute distances
+    # Compute similarity measures
     results = []
     labels = list(pmfs.keys())
-    for name, func in distance_types.items():
+    for name, func in similarity_measures_types.items():
         row = [name]
         for key in labels:
             p1, p2 = pmfs[key]
@@ -50,22 +50,10 @@ def compute_pmf_distances(pmfs: dict, distance_types,output_filename=None):
 
 if __name__ == "__main__":
 
-     # Define distance functions
-    # distance_types = {
-    #     'Modified Kolmogorov-Smirnov': distances_moduls.ks2_variant,
-    #     'Kullback-Leibler': distances_moduls.kl_div,
-    #     'Kullback-Leibler distance': distances_moduls.kl_dist,
-    #     'Jensen-Shannon divergence': distances_moduls.js_div,
-    #     'chi square': distances_moduls.chi_sqr,
-    #     'Histogram Intersection': distances_moduls.hist_intersection,
-    #     'Hellinger': distances_moduls.hellinger,
-    #     'correlation': distances_moduls.corr,
-    # }
-    
-    distance_types = {
-        'Symmetric KL': measures_class.kl_dist,
-         'Modified Kolmogorov-Smirnov': measures_class.ks2_variant,
-        'Hellinger': measures_class.hellinger,
+    similarity_measures_types = {
+        'Symmetric KL': similarity_measures_class.kl_dist,
+         'Modified Kolmogorov-Smirnov': similarity_measures_class.ks2_variant,
+        'Hellinger': similarity_measures_class.hellinger,
     }
     
     # Set working directory
@@ -105,8 +93,8 @@ if __name__ == "__main__":
         ),
     }
 
-    # Compute distances and save to Excel
-    df = compute_pmf_distances(pmfs, distance_types, output_filename='Table2.csv')
+    # Compute similarity measures and save to Excel
+    df = compute_pmf_similarity_measures(pmfs, similarity_measures_types, output_filename='Table2.csv')
     
     
     # Load PMF data from .npy files
@@ -134,6 +122,6 @@ if __name__ == "__main__":
         ),
     }
 
-    # Compute distances and save to Excel
-    df = compute_pmf_distances(pmfs, distance_types, output_filename='Table3.csv')
+    # Compute similarity measures and save to Excel
+    df = compute_pmf_similarity_measures(pmfs, similarity_measures_types, output_filename='Table3.csv')
 

@@ -12,7 +12,7 @@ from plots_function import plotting_genuine, plotting_genuine_by_without_codec
 from umap import UMAP, ParametricUMAP
 
 
-
+# This class is used to create UMAP embeddings for PMF-based embeddings.
 class class_time_embeddings_umap:
     def __init__(self,path_to_male_embeddings, path_to_female_embeddings):
         self.path_to_male_embeddings = path_to_male_embeddings
@@ -83,14 +83,8 @@ class class_time_embeddings_umap:
         
         self.chosen_labels_3_1_sex_asvspoof5 = pd.Series([x[0] for x in self.chosen_labels_3_1_sex_asvspoof5])
         
-        
-        # Define unique labels including 'genuine'
-        # unique_labels = np.concatenate([self.chosen_labels_1_1_attack_logical.unique() , self.chosen_labels_2_1_attack_logical.unique()], axis=0)
-        
-        
         # Generate a colormap
          
-            
         colors_asvspoof5 = np.array([
                     "#A52A2A",  # Brown
                     "#FFD700",  # Gold
@@ -113,8 +107,6 @@ class class_time_embeddings_umap:
                     "#FF8C00",  # DarkOrange
                     "#FFA07A",  # LightSalmon
                     "#FAA568",  # Orange
-
-                    # Additional colors to make 33
                     "#4682B4",  # SteelBlue
                     "#5F9EA0",  # CadetBlue
                     "#6495ED",  # CornflowerBlue
@@ -130,10 +122,7 @@ class class_time_embeddings_umap:
                     "#F08080",  # LightCoral
                 ])
 
-        # Ensure uniqueness by removing duplicates (if needed)
-        # colors = np.unique(colors, axis=0)
-
-        # Map each unique label to a color
+       
         labels_asvspoof5 = [f"A{str(i).zfill(2)}" for i in range(1, 33) if i not in [15, 17, 18]]
 
         # Add the 'none' label
@@ -169,14 +158,11 @@ class class_time_embeddings_umap:
         
         self.labels_to_color_3_asvspoof5 = selected_colors_A16_A32_asvspoof5
         
-        
         self.chosen_labels_1_1_attack_logical_mapping_asvspoof5 = self.chosen_labels_1_1_attack_logical_asvspoof5.map(self.label_to_color_1_asvspoof5)
        
         self.chosen_labels_2_1_attack_logical_mapping_asvspoof5 = self.chosen_labels_2_1_attack_logical_asvspoof5.map(self.label_to_color_2_asvspoof5)
         
         self.chosen_labels_3_1_attack_logical_mapping_asvspoof5 = self.chosen_labels_3_1_attack_logical_asvspoof5.map(self.labels_to_color_3_asvspoof5)
-        
-      
         
         # Stack male and female data
         self.embedded_groups_1_1 = np.vstack((embedded_groups_1_1_male, embedded_groups_1_1_female))
@@ -256,10 +242,6 @@ class class_time_embeddings_umap:
             "#FF4500",  # OrangeRed
         ])
 
-        # Ensure uniqueness by removing duplicates (if needed)
-        # colors = np.unique(colors, axis=0)
-
-        # Map each unique label to a color
         labels = [f"A{str(i).zfill(2)}" for i in range(1, 20) if i not in [15, 17, 18]]
 
         # Add the 'none' label
@@ -301,7 +283,7 @@ class class_time_embeddings_umap:
         
         print('Training UMAP model..')
         
-        self.umap_train = UMAP(n_components=2,random_state=10,n_jobs = 1)
+        self.umap_train = UMAP(n_components=2,random_state=10,n_jobs = 1) # to make this consistent, we can set the random state to a fixed value.
         self.umap_train.fit(self.embedded_groups_1_1)
         
         print('UMAP model trained')
@@ -311,8 +293,7 @@ class class_time_embeddings_umap:
             self.umap_dev = self.umap_train
         
         if include_eval:
-            # self.umap_eval = UMAP(n_components=2,random_state=0)
-            # self.umap_eval.fit(self.embedded_groups_1_3)
+
             self.umap_eval = self.umap_train
        
     

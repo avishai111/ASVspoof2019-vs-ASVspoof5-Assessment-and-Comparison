@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.io import loadmat
 
+# This script compares a .npy file with a .mat file to verify consistency after migrating the original code from MATLAB to Python.
+
 def compare_npy_to_mat(npy_path, mat_path, mat_key, atol=1e-6):
     """
     Compare a .npy file to a variable in a .mat file.
@@ -56,13 +58,13 @@ if __name__ == "__main__":
     result = compare_npy_to_mat(
         npy_path="./ASVspoof5_train/train_data_ASVSpoof5_pmf_probs_bonafide.npy",
         mat_path="C:/Users/avish/OneDrive/Desktop/thesis_research/ASVSpoof5_Time_Embeddings/calculate_hist/ASVSpoof05/2_16/ASVspoof5_train_data.mat",
-        mat_key="pmf_probs_bonafide"  # <-- Replace with your real key
+        mat_key="pmf_probs_bonafide"  
     )
 
     if "error" in result:
-        print("❌", result["error"])
+        print("Error: ", result["error"])
     else:
-        print("✅ Comparison Result:")
+        print("Comparison Result:")
         for k, v in result.items():
             print(f"{k}: {v}")
 
@@ -70,13 +72,13 @@ if __name__ == "__main__":
     result = compare_npy_to_mat(
         npy_path='./ASVspoof5_train/train_data_ASVSpoof5_pmf_probs_spoofed.npy',
         mat_path="C:/Users/avish/OneDrive/Desktop/thesis_research/ASVSpoof5_Time_Embeddings/calculate_hist/ASVSpoof05/2_16/ASVspoof5_train_data.mat",
-        mat_key="pmf_probs_spoofed"  # <-- Replace with your real key
+        mat_key="pmf_probs_spoofed"  
     )
 
     if "error" in result:
-        print("❌", result["error"])
+        print("Error: ", result["error"])
     else:
-        print("✅ Comparison Result:")
+        print("Comparison Result:")
         for k, v in result.items():
             print(f"{k}: {v}")
             
@@ -84,13 +86,13 @@ if __name__ == "__main__":
     result = compare_npy_to_mat(
         npy_path="./ASVspoof5_Dev/validation_data_ASVSpoof5_pmf_probs_bonafide.npy",
         mat_path="C:/Users/avish/OneDrive/Desktop/thesis_research/ASVSpoof5_Time_Embeddings/calculate_hist/ASVSpoof05/2_16/ASVspoof5_validation_data.mat",
-        mat_key="pmf_probs_bonafide"  # <-- Replace with your real key
+        mat_key="pmf_probs_bonafide" 
     )
 
     if "error" in result:
-        print("❌", result["error"])
+        print("Error: ", result["error"])
     else:
-        print("✅ Comparison Result:")
+        print("Comparison Result:")
         for k, v in result.items():
             print(f"{k}: {v}")
 
@@ -98,27 +100,26 @@ if __name__ == "__main__":
     result = compare_npy_to_mat(
         npy_path='./ASVspoof5_Dev/validation_data_ASVSpoof5_pmf_probs_spoofed.npy',
         mat_path="C:/Users/avish/OneDrive/Desktop/thesis_research/ASVSpoof5_Time_Embeddings/calculate_hist/ASVSpoof05/2_16/ASVspoof5_validation_data.mat",
-        mat_key="pmf_probs_spoofed"  # <-- Replace with your real key
+        mat_key="pmf_probs_spoofed"  
     )
 
     if "error" in result:
-        print("❌", result["error"])
+        print("Error: ", result["error"])
     else:
-        print("✅ Comparison Result:")
+        print("Comparison Result:")
         for k, v in result.items():
             print(f"{k}: {v}")
-            
             
     result = compare_npy_to_mat(
         npy_path="./ASVspoof5_Eval/eval_data_ASVSpoof5_pmf_probs_bonafide.npy",
         mat_path="C:/Users/avish/OneDrive/Desktop/thesis_research/ASVSpoof5_Time_Embeddings/calculate_hist/ASVSpoof05/2_16/ASVspoof5_eval_data.mat",
-        mat_key="pmf_probs_bonafide"  # <-- Replace with your real key
+        mat_key="pmf_probs_bonafide" 
     )
 
     if "error" in result:
-        print("❌", result["error"])
+        print("Error: ", result["error"])
     else:
-        print("✅ Comparison Result:")
+        print("Comparison Result:")
         for k, v in result.items():
             print(f"{k}: {v}")
 
@@ -126,13 +127,13 @@ if __name__ == "__main__":
     result = compare_npy_to_mat(
         npy_path='./ASVspoof5_Eval/eval_data_ASVSpoof5_pmf_probs_spoofed.npy',
         mat_path="C:/Users/avish/OneDrive/Desktop/thesis_research/ASVSpoof5_Time_Embeddings/calculate_hist/ASVSpoof05/2_16/ASVspoof5_eval_data.mat",
-        mat_key="pmf_probs_spoofed"  # <-- Replace with your real key
+        mat_key="pmf_probs_spoofed" 
     )
 
     if "error" in result:
-        print("❌", result["error"])
+        print("Error: ", result["error"])
     else:
-        print("✅ Comparison Result:")
+        print("Comparison Result:")
         for k, v in result.items():
             print(f"{k}: {v}")
             
@@ -141,13 +142,13 @@ if __name__ == "__main__":
     result = compare_npy_to_mat(
         npy_path="./ASVSpoof2019_train/train_data_ASVSpoof2019_pmf_probs_bonafide.npy",
         mat_path="C:/Users/avish/OneDrive/Desktop/thesis_research/ASVSpoof5_Time_Embeddings/calculate_hist/ASVSpoof2019/2_16/ASVSpoof2019_train_data.mat",
-        mat_key="pmf_probs_bonafide"  # <-- Replace with your real key
+        mat_key="pmf_probs_bonafide"  
     )
 
     if "error" in result:
-        print("❌", result["error"])
+        print("Error: ", result["error"])
     else:
-        print("✅ Comparison Result:")
+        print("Comparison Result:")
         for k, v in result.items():
             print(f"{k}: {v}")
 
@@ -155,13 +156,13 @@ if __name__ == "__main__":
     result = compare_npy_to_mat(
         npy_path='./ASVSpoof2019_train/train_data_ASVSpoof2019_pmf_probs_spoofed.npy',
         mat_path="C:/Users/avish/OneDrive/Desktop/thesis_research/ASVSpoof5_Time_Embeddings/calculate_hist/ASVSpoof2019/2_16/ASVSpoof2019_train_data.mat",
-        mat_key="pmf_probs_spoofed"  # <-- Replace with your real key
+        mat_key="pmf_probs_spoofed"  
     )
 
     if "error" in result:
-        print("❌", result["error"])
+        print("Error: ", result["error"])
     else:
-        print("✅ Comparison Result:")
+        print("Comparison Result:")
         for k, v in result.items():
             print(f"{k}: {v}")
             
@@ -169,13 +170,13 @@ if __name__ == "__main__":
     result = compare_npy_to_mat(
         npy_path="./ASVSpoof2019_Dev/validation_data_ASVSpoof2019_pmf_probs_bonafide.npy",
         mat_path="C:/Users/avish/OneDrive/Desktop/thesis_research/ASVSpoof5_Time_Embeddings/calculate_hist/ASVSpoof2019/2_16/ASVSpoof2019_validation_data.mat",
-        mat_key="pmf_probs_bonafide"  # <-- Replace with your real key
+        mat_key="pmf_probs_bonafide"  
     )
 
     if "error" in result:
-        print("❌", result["error"])
+        print("Error: ", result["error"])
     else:
-        print("✅ Comparison Result:")
+        print("Comparison Result:")
         for k, v in result.items():
             print(f"{k}: {v}")
 
@@ -183,27 +184,26 @@ if __name__ == "__main__":
     result = compare_npy_to_mat(
         npy_path='./ASVSpoof2019_Dev/validation_data_ASVSpoof2019_pmf_probs_spoofed.npy',
         mat_path="C:/Users/avish/OneDrive/Desktop/thesis_research/ASVSpoof5_Time_Embeddings/calculate_hist/ASVSpoof2019/2_16/ASVSpoof2019_validation_data.mat",
-        mat_key="pmf_probs_spoofed"  # <-- Replace with your real key
+        mat_key="pmf_probs_spoofed" 
     )
 
     if "error" in result:
-        print("❌", result["error"])
+        print("Error: ", result["error"])
     else:
-        print("✅ Comparison Result:")
+        print("Comparison Result:")
         for k, v in result.items():
             print(f"{k}: {v}")
-            
             
     result = compare_npy_to_mat(
         npy_path="./ASVSpoof2019_Eval/eval_data_ASVSpoof2019_pmf_probs_bonafide.npy",
         mat_path="C:/Users/avish/OneDrive/Desktop/thesis_research/ASVSpoof5_Time_Embeddings/calculate_hist/ASVSpoof2019/2_16/ASVSpoof2019_eval_data.mat",
-        mat_key="pmf_probs_bonafide"  # <-- Replace with your real key
+        mat_key="pmf_probs_bonafide"  
     )
 
     if "error" in result:
-        print("❌", result["error"])
+        print("Error: ", result["error"])
     else:
-        print("✅ Comparison Result:")
+        print("Comparison Result:")
         for k, v in result.items():
             print(f"{k}: {v}")
 
@@ -211,12 +211,12 @@ if __name__ == "__main__":
     result = compare_npy_to_mat(
         npy_path='./ASVSpoof2019_Eval/eval_data_ASVSpoof2019_pmf_probs_spoofed.npy',
         mat_path="C:/Users/avish/OneDrive/Desktop/thesis_research/ASVSpoof5_Time_Embeddings/calculate_hist/ASVSpoof2019/2_16/ASVSpoof2019_eval_data.mat",
-        mat_key="pmf_probs_spoofed"  # <-- Replace with your real key
+        mat_key="pmf_probs_spoofed"  
     )
 
     if "error" in result:
-        print("❌", result["error"])
+        print("Error: ", result["error"])
     else:
-        print("✅ Comparison Result:")
+        print("Comparison Result:")
         for k, v in result.items():
             print(f"{k}: {v}")

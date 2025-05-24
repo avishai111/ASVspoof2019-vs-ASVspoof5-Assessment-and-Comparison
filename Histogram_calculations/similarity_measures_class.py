@@ -1,6 +1,6 @@
 import numpy as np
 
-class measures_class:
+class similarity_measures_class:
 
     @staticmethod
     def ks2_variant(p1, p2):
@@ -16,7 +16,7 @@ class measures_class:
 
     @staticmethod
     def kl_dist(p1, p2):
-        return measures_class.kl_div(p1, p2) + measures_class.kl_div(p2, p1)
+        return similarity_measures_class.kl_div(p1, p2) + similarity_measures_class.kl_div(p2, p1)
 
     @staticmethod
     def hellinger(p1, p2):
