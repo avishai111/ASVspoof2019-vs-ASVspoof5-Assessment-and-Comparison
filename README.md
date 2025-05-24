@@ -30,7 +30,7 @@ This repository also used on the following repositories:
 Follow the instructions below to reproduce key experiments from the paper:
 
 * **UMAP Visualization of Time Embeddings**
-  To run the UMAP experiments on time-based embeddings, first [download the required data from Google Drive](https://drive.google.com/file/d/1TTY5BggaaUn4laQr2TmefT_83FoJBaf7/view?usp=drive_link). Then execute:
+  To run the UMAP experiments on time-based embeddings, first [download the required npz data file from Google Drive](https://drive.google.com/file/d/1L9xETMFgd9zkHdfyuL7U2dX5lDlUgzId/view?usp=sharing). Then execute:
 
   ```bash
   python PMF_BASED_Embeddings_Umap/main_umap_2D.py
