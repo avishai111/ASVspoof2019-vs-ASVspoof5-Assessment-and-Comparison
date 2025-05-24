@@ -73,8 +73,7 @@ If you use this codebase in your research or publications, please consider citin
 
 ## 🙌 Acknowledgements
 
-This work is inspired by the ASVspoof Challenge evaluation framework and research in spoofing countermeasures (CM) for automatic speaker verification (ASV) systems.
-
+This work is based on the ASVspoof Challenge databases and research on spoofing countermeasures (CM) for automatic speaker verification (ASV) systems.
 Thank to the authors of the following repositories:
 
 ```bibtex
