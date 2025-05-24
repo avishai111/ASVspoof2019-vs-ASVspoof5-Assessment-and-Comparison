@@ -67,7 +67,8 @@ if __name__ == "__main__":
          'Modified Kolmogorov-Smirnov': distances_moduls.ks2_variant,
         'Hellinger': distances_moduls.hellinger,
     }
-    
+    # Set working directory
+    os.chdir('./Histogram_calculations')
     TRAIN_FOLDER_DATA_2019 = './ASVspoof2019_train/'
     DEV_FOLDER_DATA_2019 = './ASVspoof2019_Dev/'
     Eval_FOLDER_DATA_2019 = './ASVspoof2019_Eval/'

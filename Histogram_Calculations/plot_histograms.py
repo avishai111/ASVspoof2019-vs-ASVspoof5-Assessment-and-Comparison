@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-
+import os
 # Constants
 NUM_BINS = 2**16
 FontSize_title = 36
@@ -54,8 +54,11 @@ def plot_precomputed_pmfs(pmf_a, pmf_b, label_a, label_b, title, bins=NUM_BINS, 
 
 
 if __name__ == "__main__":
+    # Set working directory
+    os.chdir('./Histogram_calculations')
    
     # === ASVspoof ASVspoof5 === 
+    
     pmf_probs_bonafide_train_ASVspoof05 = np.load('./ASVspoof5_train/train_data_ASVSpoof5_pmf_probs_bonafide.npy')
     pmf_probs_spoofed_train_ASVspoof05  = np.load('./ASVspoof5_train/train_data_ASVSpoof5_pmf_probs_spoofed.npy')
 

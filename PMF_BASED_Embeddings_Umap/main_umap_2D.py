@@ -1,7 +1,5 @@
 import sys
 import os
-import torch
-import sklearn  
 import pickle
 import numpy as np
 import pandas as pd
@@ -15,7 +13,8 @@ from umap_class import class_time_embeddings_umap
 
 
 if __name__ == "__main__":
-
+    # Set working directory
+    os.chdir('./PMF_based_embeddings_umap') 
     asvspoof5_train_protocol = read_ASVSpoof5_protocol('./ASVspoof5_protocols/ASVspoof5.train.tsv')
     asvspoof5_dev_protocol = read_ASVSpoof5_protocol('./ASVspoof5_protocols/ASVspoof5.dev.track_1.tsv')
     asvspoof5_eval_protocol = read_ASVSpoof5_protocol('./ASVspoof5_protocols/ASVspoof5.eval.track_1.tsv')
