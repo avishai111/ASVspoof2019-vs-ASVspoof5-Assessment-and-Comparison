@@ -2,7 +2,7 @@
 
 This repository contains the official implementation of the paper ["ASVspoof2019 vs. ASVspoof5: Assessment and Comparison"](https://arxiv.org/abs/2505.15911).
 
-In this work, we conduct a comprehensive evaluation and comparison of two benchmark datasets used developing spoofing countermeasures for automatic speaker verification systems: ASVspoof2019 and ASVspoof5. 
+In this work, we conduct a comprehensive assessment and comparison of two benchmark databases (ASVspoof2019 and ASVspoof5) used for developing spoofing countermeasures for automatic speaker verification systems. 
 
 The code has been migrated from Matlab to Python to improve usability and accessibility. If you encounter any issues while using the repo, feel free to contact [Avishai Weizman](mailto:wavishay@post.bgu.ac.il).
 
