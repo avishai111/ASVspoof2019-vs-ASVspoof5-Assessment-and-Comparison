@@ -1,0 +1,15 @@
+matplotlib
+numpy
+openpyxl
+pandas
+umap-learn
+tqdm
+soundfile
+torch
+scipy
+scikit-learn
+confidence_intervals
+
+
+
+
