@@ -5,12 +5,13 @@ This repository contains the official implementation of the paper ["ASVspoof2019
 In this work, we conduct a comprehensive evaluation and comparison of two benchmark datasets used developing spoofing countermeasures for automatic speaker verification systems: ASVspoof2019 and ASVspoof5. 
 
 The code has been migrated from Matlab to Python to improve usability and accessibility. If you encounter any issues while using the repo, feel free to sent email [Avishai Weizman](mailto:wavishay@post.bgu.ac.il).
+
 ## 📦 Dependencies
 
 Make sure you have the following Python packages installed:
 
 ```bash
-pip install numpy pandas scipy scikit-learn matplotlib torch umap-learn confidence_intervals scipy openpyxl 
+pip install numpy pandas scipy scikit-learn matplotlib torch umap-learn confidence_intervals scipy openpyxl soundfile
 ```
 
 This repository also used on the following repositories:
@@ -85,7 +86,6 @@ Thank to the authors of the following repositories:
   volume={28},
   number={},
   pages={937-941},
-  abstract={Human voices can be used to authenticate the identity of the speaker, but the automatic speaker verification (ASV) systems are vulnerable to voice spoofing attacks, such as impersonation, replay, text-to-speech, and voice conversion. Recently, researchers developed anti-spoofing techniques to improve the reliability of ASV systems against spoofing attacks. However, most methods encounter difficulties in detecting unknown attacks in practical use, which often have different statistical distributions from known attacks. Especially, the fast development of synthetic voice spoofing algorithms is generating increasingly powerful attacks, putting the ASV systems at risk of unseen attacks. In this work, we propose an anti-spoofing system to detect unknown synthetic voice spoofing attacks (i.e., text-to-speech or voice conversion) using one-class learning. The key idea is to compact the bona fide speech representation and inject an angular margin to separate the spoofing attacks in the embedding space. Without resorting to any data augmentation methods, our proposed system achieves an equal error rate (EER) of 2.19% on the evaluation set of ASVspoof 2019 Challenge logical access scenario, outperforming all existing single systems (i.e., those without model ensemble).},
   keywords={},
   doi={10.1109/LSP.2021.3076358},
   ISSN={1558-2361},
