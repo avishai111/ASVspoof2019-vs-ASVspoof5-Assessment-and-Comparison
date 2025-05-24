@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import scipy.io as sio
-from distances_moduls import distances_moduls  # You will need to implement or port these functions
+from Histogram_calculations.measures_class import measures_class  
 import os
 # Constants
 num_bins = 2**16
@@ -63,10 +63,11 @@ if __name__ == "__main__":
     # }
     
     distance_types = {
-        'Symmetric KL': distances_moduls.kl_dist,
-         'Modified Kolmogorov-Smirnov': distances_moduls.ks2_variant,
-        'Hellinger': distances_moduls.hellinger,
+        'Symmetric KL': measures_class.kl_dist,
+         'Modified Kolmogorov-Smirnov': measures_class.ks2_variant,
+        'Hellinger': measures_class.hellinger,
     }
+    
     # Set working directory
     os.chdir('./Histogram_calculations')
     TRAIN_FOLDER_DATA_2019 = './ASVspoof2019_train/'

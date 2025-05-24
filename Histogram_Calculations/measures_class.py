@@ -1,6 +1,6 @@
 import numpy as np
 
-class distances_moduls:
+class measures_class:
 
     @staticmethod
     def ks2_variant(p1, p2):
@@ -16,7 +16,7 @@ class distances_moduls:
 
     @staticmethod
     def kl_dist(p1, p2):
-        return distances_moduls.kl_div(p1, p2) + distances_moduls.kl_div(p2, p1)
+        return measures_class.kl_div(p1, p2) + measures_class.kl_div(p2, p1)
 
     @staticmethod
     def hellinger(p1, p2):
