@@ -10,7 +10,7 @@ import scipy
 from loading_time_embeddings_datasets import load_data_female, load_data_male , load_data_all_ASVSpoof5 , read_ASVSpoof5_protocol
 from plots_function import plotting_genuine, plotting_genuine_by_without_codec
 from umap import UMAP, ParametricUMAP
-
+import json
 
 # This class is used to create UMAP embeddings for PMF-based embeddings.
 class class_time_embeddings_umap:
@@ -323,7 +323,7 @@ if __name__ == "__main__":
 
     time_emb = pickle.load(open('./time_emb.pkl', 'rb'))
     
-    
+
     time_embed_train_2019_samples_2D = time_emb.umap_train.transform(time_emb.embedded_groups_1_1)
     print("Time embeddings for ASVspoof2019 training samples transformed to 2D.")
     
@@ -351,6 +351,17 @@ if __name__ == "__main__":
     time_emb.time_embed_eval_05_samples_2D = time_embed_eval_05_samples_2D
     
     data_to_save = {
+    
+    # ASVspoof2019 embeddings
+    'embedded_groups_1_1_2019': time_emb.embedded_groups_1_1,
+    'embedded_groups_1_2_2019': time_emb.embedded_groups_1_2,
+    'embedded_groups_1_3_2019': time_emb.embedded_groups_1_3,
+    
+    # ASVspoof5 embeddings
+    'embedded_groups_1_1_asvspoof5': time_emb.embedded_groups_1_1_asvspoof5,
+    'embedded_groups_1_2_asvspoof5': time_emb.embedded_groups_1_2_asvspoof5,
+    'embedded_groups_1_3_asvspoof5': time_emb.embedded_groups_1_3_asvspoof5,
+    
     # Combined spoofed labels
     "chosen_labels_1_1_is_spoofed": time_emb.chosen_labels_1_1_is_spoofed,
     "chosen_labels_2_1_is_spoofed": time_emb.chosen_labels_2_1_is_spoofed,
