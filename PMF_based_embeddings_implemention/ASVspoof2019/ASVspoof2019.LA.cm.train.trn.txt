@@ -1,0 +1,3 @@
+LA_0094 LA_T_1000137 - A04 spoof male
+LA_0089 LA_T_1000406 - - bonafide male
+LA_0098 LA_T_1000648 - A01 spoof female

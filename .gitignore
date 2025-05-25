@@ -177,4 +177,7 @@ cython_debug/
 *.pkl
 *.pth
 *.npz
-PMF_based_embeddings_implemention/
+
+# audio files
+*.wav
+*.flac
