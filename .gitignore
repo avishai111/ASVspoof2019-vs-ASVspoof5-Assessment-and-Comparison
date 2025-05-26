@@ -189,4 +189,4 @@ PMF_based_embeddings_implemention/LA
 PMF_based_embeddings_implemention/checks
 
 # Ignore a specific file
-checks_compare_to_mat_file.py
+#checks_compare_to_mat_file.py

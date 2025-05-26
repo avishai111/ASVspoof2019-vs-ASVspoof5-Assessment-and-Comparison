@@ -647,10 +647,10 @@ def compute_distances_to_reference(pmf_batch: np.ndarray, ref_pmf: np.ndarray) -
             results["chi_square"][i, ch] = chi_square_test(p, q)
             results["correlation"][i, ch] = correlation_distance(p, q)
             results["hellinger"][i, ch] = hellinger_distance(p, q)
-            results["intersection"][i, ch] = 1 - intersection_distance(p, q)
-            results["kl_divergence"][i, ch] = kullback_leibler_divergence(p, q)
-            results["symmetric_kl"][i, ch] = symmetric_kullback_leibler_divergence(p, q)
+            results["intersection"][i, ch] = intersection_distance(p, q)
             results["jensen_shannon"][i, ch] = jensen_shannon_divergence(p, q)
+            results["symmetric_kl"][i, ch] = symmetric_kullback_leibler_divergence(p, q)
+            results["kl_divergence"][i, ch] = kullback_leibler_divergence(p, q)
             results["modified_ks"][i, ch] = modified_kolmogorov_smirnov(p, q)
 
     return results
