@@ -183,7 +183,10 @@ cython_debug/
 *.flac
 *.mat
 
+# Ignore directories (trailing slash makes it clear they're folders)
 PMF_based_embeddings_implemention/LA/
 PMF_based_embeddings_implemention/ASVspoof2019/
 PMF_based_embeddings_implemention/checks/
+
+# Ignore a specific file
 checks_compare_to_mat_file.py
