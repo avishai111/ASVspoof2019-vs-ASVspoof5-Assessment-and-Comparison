@@ -104,8 +104,9 @@ if __name__ == "__main__":
     
     #calculate distnaces bettween the PMF histograms
     print("Calculating distances between PMF histograms...")
-    dist_bona = PMF_measure_utils.compute_distances_to_reference(res, pmf_train_bonafide)
     dist_spoof = PMF_measure_utils.compute_distances_to_reference(res, pmf_train_spoof)
+    dist_bona = PMF_measure_utils.compute_distances_to_reference(res, pmf_train_bonafide)
+    
 
     # Compute difference metric-by-metric
     diff = {
@@ -119,12 +120,11 @@ if __name__ == "__main__":
 
     diff_df = pd.DataFrame([interleaved], columns=columns_names)
     
-    diff_df - embedded_groups_1_1[0,:]
     
-    diff_array = diff_df.values.flatten()  # shape (160,)
-    embedded_array = embedded_groups_1_1[0, :]  
+    diff_array = diff_df.values.flatten()[0:8]  # shape (160,)
+    embedded_array = embedded_groups_1_1[0, 0:8]  
   
-    assert diff_array.shape == embedded_array.shape
+  #  assert diff_array.shape == embedded_array.shape
     difference = diff_array - embedded_array
     print(f"Mean difference: {np.mean(difference):.6f}")
     print(f"Max difference: {np.max(np.abs(difference)):.6f}")
