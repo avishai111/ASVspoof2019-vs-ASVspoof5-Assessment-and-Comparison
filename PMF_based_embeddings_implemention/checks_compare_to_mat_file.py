@@ -9,7 +9,7 @@ import json
 import PMF_measure_utils 
 from checks.data_loading import load_data_male, get_real_channel,get_columns_names_feature_importance
 import pandas as pd
-
+from scipy.io import loadmat
 # checks, Still incomplete.
 
 
@@ -17,7 +17,7 @@ NUM_BINS = 2**16
 HIST_EDGES = (-0.999969482421875, 1) # Adjusted from Matan's Code: it's for the 0-bin to exist
 TRAIN_FILE_FOLDER = 'C:/Users/avish/OneDrive/Desktop/avishai111-ASVspoof2019-vs-ASVspoof5-Assessment-and-Comparison/PMF_based_embeddings_implemention/LA/ASVspoof2019_LA_train/flac/'  # Replace with your actual folder path
 
-PROTOCOL_TRAIN ='C:/Users/avish/OneDrive/Desktop/avishai111-ASVspoof2019-vs-ASVspoof5-Assessment-and-Comparison/PMF_based_embeddings_implemention/ASVspoof2019/ASVspoof2019_test.LA.cm.train.trn.txt'
+PROTOCOL_TRAIN ='C:/Users/avish/OneDrive/Desktop/avishai111-ASVspoof2019-vs-ASVspoof5-Assessment-and-Comparison/PMF_based_embeddings_implemention/ASVspoof2019/ASVspoof2019.LA.cm.train.trn.txt'
 
 DEV_FILE_FOLDER = "/Users/guyperets/Documents/MSc/Datasets/ASVSpoof2019/LA/ASVspoof2019_LA_dev/flac"
 PROTOCOL_DEV = "/Users/guyperets/Documents/MSc/Datasets/ASVSpoof2019/LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.dev.trl.txt"
@@ -27,7 +27,7 @@ PROTOCOL_EVAL = "/Users/guyperets/Documents/MSc/Datasets/ASVSpoof2019/LA/ASVspoo
 
 MATAN_HIST_DETAILS = "/Users/guyperets/Documents/MSc/PythonNotebooks/MatanPythonConversion/pmf_after_filters/ASVSpoof2019/gammtone/hist_details.mat"
 MATAN_RESULT_JSON = "/Users/guyperets/Documents/MSc/PythonNotebooks/MatanPythonConversion/GuyPythonConversion/hist_data_formatted.json" # Created from what Avishai sent me, which is a conversion of Matan's hist_details.mat file
-MATLAB_GAMMATONE_FILTERS = "/Users/guyperets/Documents/MSc/ASVspoof_PMF-2d_quantization/matlab/filters/gammatone_filters.mat" # Generated from Matan's Code (Ask Guy-P for create_filters_guy.m file if needed)
+MATLAB_GAMMATONE_FILTERS = "C:/Users/avish/OneDrive/Desktop/avishai111-ASVspoof2019-vs-ASVspoof5-Assessment-and-Comparison/PMF_based_embeddings_implemention/gammatone_filters.mat" # Generated from Matan's Code (Ask Guy-P for create_filters_guy.m file if needed)
 
 
 if __name__ == "__main__":
@@ -56,6 +56,11 @@ if __name__ == "__main__":
     num_fft=2047, # From Matan's Code
     with_inverse=True
     )
+    
+    matanfilters = loadmat(MATLAB_GAMMATONE_FILTERS) # gammatone filters from Matan's code
+    
+    gfb.filers = np.vstack([matanfilters['normal_filters'],matanfilters['inverse_filters']]) # gammatone filters from Matan's code
+    
     pmf_t = PMF(TRAIN_FILE_FOLDER, PROTOCOL_TRAIN, ftype=gfb)
     # pmf_d = PMF(DEV_FILE_FOLDER, PROTOCOL_DEV, ftype=gfb)
     # pmf_e = PMF(EVAL_FILE_FOLDER, PROTOCOL_EVAL, ftype=gfb)
@@ -75,7 +80,15 @@ if __name__ == "__main__":
     # pmf_train_spoof = np.array([pmf for (_, pmf) in pmf_train_spoof])
     # pmf_train_bonafide, edges_train_bonafide = pmf_t.compute_hist_by_category_stream("bonafide", num_bins=NUM_BINS, hist_edges=HIST_EDGES)
     # pmf_train_bonafide = np.array([pmf for (_, pmf) in pmf_train_bonafide])
-    data = np.load("pmf__histograms_train_data.npz")
+    # np.savez(
+    # "pmf_train_data.npz",
+    # pmf_train_spoof=pmf_train_spoof,
+    # edges_train_spoof=edges_train_spoof,
+    # pmf_train_bonafide=pmf_train_bonafide,
+    # edges_train_bonafide=edges_train_bonafide
+    # )
+
+    data = np.load("pmf_train_data.npz")
 
     pmf_train_spoof = data["pmf_train_spoof"]
     edges_train_spoof = data["edges_train_spoof"]
