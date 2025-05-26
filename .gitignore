@@ -181,3 +181,8 @@ cython_debug/
 # audio files
 *.wav
 *.flac
+
+PMF_based_embeddings_implemention/LA/
+PMF_based_embeddings_implemention/ASVspoof2019/
+PMF_based_embeddings_implemention/checks/
+checks_compare_to_mat_file.py
