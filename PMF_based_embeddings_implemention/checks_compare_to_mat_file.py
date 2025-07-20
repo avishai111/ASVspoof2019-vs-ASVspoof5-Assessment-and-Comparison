@@ -120,8 +120,8 @@ if __name__ == "__main__":
     diff_df = pd.DataFrame([interleaved], columns=columns_names)
     
     
-    diff_array = diff_df.values.flatten()[0:8]  # shape (160,)
-    embedded_array = embedded_groups_1_1[0, 0:8]  
+    diff_array = diff_df.values.flatten()[9:16]  # shape (160,)
+    embedded_array = embedded_groups_1_1[0, 9:16]  
   
   #  assert diff_array.shape == embedded_array.shape
     difference = diff_array - embedded_array
@@ -130,11 +130,4 @@ if __name__ == "__main__":
     print(diff_array)
     print(embedded_array)
     
-    diff_array = diff_df.values.flatten() # shape (160,)
-    embedded_array = embedded_groups_1_1 
   
-  #  assert diff_array.shape == embedded_array.shape
-    difference = diff_array - embedded_array
-    print(f"Mean difference: {np.mean(difference):.6f}")
-    print(f"Max difference: {np.max(np.abs(difference)):.6f}")
-   

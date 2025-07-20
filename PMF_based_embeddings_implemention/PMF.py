@@ -161,7 +161,7 @@ class PMF:
         all_pmfs = []
         filenames = []
 
-        for i, path in enumerate(self.file_list, 1):
+        for i, path in enumerate(tqdm(self.file_list, desc="Processing files"), 1):
             audio, _ = sf.read(path, dtype='float32')
             if audio.ndim != 1:
                 raise ValueError(f'{path} is not mono.')

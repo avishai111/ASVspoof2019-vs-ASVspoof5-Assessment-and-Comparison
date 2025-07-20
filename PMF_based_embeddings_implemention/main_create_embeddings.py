@@ -25,6 +25,17 @@ MATLAB_GAMMATONE_FILTERS = "/Users/guyperets/Documents/MSc/ASVspoof_PMF-2d_quant
 
 
 if __name__ == "__main__":
+    SAVE_ref_flag = False
+    LOAD_ref_flag = True
+    SAVE_res_flag = True
+    LOAD_res_flag = False
+    res_type = 'train'
+    
+    #initialize the PMF object
+    pmf_t , pmf_d, pmf_e = None, None, None
+    pmf_train_spoof , pmf_train_bonafide = None, None
+    edges_train_spoof, edges_train_bonafide = None, None
+    res, filenames = None, None
     # Load the PMF data
     gfb = GammatoneFilterbank(
     num_filters=10,
@@ -37,7 +48,13 @@ if __name__ == "__main__":
     pmf_t = PMF(TRAIN_FILE_FOLDER, PROTOCOL_TRAIN, ftype=gfb)
     # pmf_d = PMF(DEV_FILE_FOLDER, PROTOCOL_DEV, ftype=gfb)
     # pmf_e = PMF(EVAL_FILE_FOLDER, PROTOCOL_EVAL, ftype=gfb)
-    
+    if res_type == 'train':
+        res_PMF = pmf_t
+    elif res_type == 'dev':
+        res_PMF = pmf_d
+    elif res_type == 'eval':
+        res_PMF = pmf_e
+
     # caluclate the PMF histograms for training set
     print("Computing PMF histograms for training set...")
     '''
@@ -48,15 +65,55 @@ if __name__ == "__main__":
     (hist_channel_19, pmf_channel_19)
     ]
     '''
-    pmf_train_spoof, edges_train_spoof = pmf_t.compute_hist_by_category_stream("spoof", num_bins=NUM_BINS, hist_edges=HIST_EDGES)
-    pmf_train_spoof = np.array([pmf for (_, pmf) in pmf_train_spoof])
-    pmf_train_bonafide, edges_train_bonafide = pmf_t.compute_hist_by_category_stream("bonafide", num_bins=NUM_BINS, hist_edges=HIST_EDGES)
-    pmf_train_bonafide = np.array([pmf for (_, pmf) in pmf_train_bonafide])
-    print("PMF histograms for training data computed.")
-    # Compute PMF histograms for development speech
-    res, filenames = pmf_t.compute_hist_per_file_stream(num_bins = NUM_BINS, hist_edges = HIST_EDGES)
-    print("PMF histograms for training data computed.")
     
+    if SAVE_ref_flag:
+        pmf_train_spoof, edges_train_spoof = pmf_t.compute_hist_by_category_stream("spoof", num_bins=NUM_BINS, hist_edges=HIST_EDGES)
+        pmf_train_bonafide, edges_train_bonafide = pmf_t.compute_hist_by_category_stream("bonafide", num_bins=NUM_BINS, hist_edges=HIST_EDGES)
+
+        np.savez("pmf_train_data.npz",
+                 pmf_train_spoof=pmf_train_spoof,
+                 edges_train_spoof=edges_train_spoof,
+                 pmf_train_bonafide=pmf_train_bonafide,
+                 edges_train_bonafide=edges_train_bonafide)
+
+    
+    if LOAD_ref_flag:
+        data = np.load("pmf_train_data.npz")
+        pmf_train_spoof = data["pmf_train_spoof"]
+        edges_train_spoof = data["edges_train_spoof"]
+        pmf_train_bonafide = data["pmf_train_bonafide"]
+        edges_train_bonafide = data["edges_train_bonafide"]
+        
+    print("PMF histograms for training data computed.")
+    # Compute PMF histograms for development speech  
+    if SAVE_res_flag:
+        res, filenames = res_PMF.compute_hist_per_file_stream(num_bins=NUM_BINS, hist_edges=HIST_EDGES)
+        if res_type == 'train':
+            np.savez("pmf_res_train_data.npz",
+                    res=res,
+                    filenames=filenames)
+        elif res_type == 'dev':
+            np.savez("pmf_res_dev_data.npz",
+                    res=res,
+                    filenames=filenames)
+        elif res_type == 'eval':
+            np.savez("pmf_res_eval_data.npz",
+                    res=res,
+                    filenames=filenames)
+
+    if LOAD_res_flag:
+        if res_type == 'train':
+            data = np.load("pmf_res_train_data.npz")
+        elif res_type == 'dev':
+            data = np.load("pmf_res_dev_data.npz")
+        elif res_type == 'eval':
+            data = np.load("pmf_res_eval_data.npz")
+            
+        res = data["res"]
+        filenames = data["filenames"]
+
+    print("PMF histograms for development data computed.")
+
     #calculate distnaces bettween the PMF histograms
     print("Calculating distances between PMF histograms...")
     dist_bona = PMF_measure_utils.compute_distances_to_reference(res, pmf_train_bonafide)
