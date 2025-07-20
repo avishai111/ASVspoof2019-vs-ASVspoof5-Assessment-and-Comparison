@@ -109,7 +109,7 @@ if __name__ == "__main__":
     
     # Compute difference metric-by-metric
     diff = {
-        key: dist_spoof[key] - dist_bona[key]  for key in dist_bona
+        key: dist_spoof[key] - dist_bona[key]  for key in dist_spoof
     }
     interleaved = []
     for i in range(20):  # 20 steps × 8 metrics = 160
@@ -120,8 +120,8 @@ if __name__ == "__main__":
     diff_df = pd.DataFrame([interleaved], columns=columns_names)
     
     
-    diff_array = diff_df.values.flatten()[9:16]  # shape (160,)
-    embedded_array = embedded_groups_1_1[0, 9:16]  
+    diff_array = diff_df.values.flatten()[0:8]  # shape (160,)
+    embedded_array = embedded_groups_1_1[0, 0:8]  
   
   #  assert diff_array.shape == embedded_array.shape
     difference = diff_array - embedded_array

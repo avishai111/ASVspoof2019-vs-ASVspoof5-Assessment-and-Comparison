@@ -25,8 +25,8 @@ MATLAB_GAMMATONE_FILTERS = "/Users/guyperets/Documents/MSc/ASVspoof_PMF-2d_quant
 
 
 if __name__ == "__main__":
-    SAVE_ref_flag = False
-    LOAD_ref_flag = True
+    SAVE_ref_flag = True
+    LOAD_ref_flag = False
     SAVE_res_flag = True
     LOAD_res_flag = False
     res_type = 'train'
