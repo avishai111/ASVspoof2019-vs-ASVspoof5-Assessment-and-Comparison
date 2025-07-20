@@ -130,3 +130,11 @@ if __name__ == "__main__":
     print(diff_array)
     print(embedded_array)
     
+    diff_array = diff_df.values.flatten() # shape (160,)
+    embedded_array = embedded_groups_1_1 
+  
+  #  assert diff_array.shape == embedded_array.shape
+    difference = diff_array - embedded_array
+    print(f"Mean difference: {np.mean(difference):.6f}")
+    print(f"Max difference: {np.max(np.abs(difference)):.6f}")
+   

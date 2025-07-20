@@ -12,7 +12,7 @@ from scipy.io import loadmat
 from scipy.signal import convolve
 import soundfile as sf
 from tqdm import tqdm
-from PMF_based_embeddings_implemention.CONSTANTS import NUM_BINS, HIST_EDGES
+from CONSTANTS import NUM_BINS, HIST_EDGES
 
 class PMF:
     def __init__(self, files_folder, protocol_file=None, ftype=None):

@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.signal import freqz
 from scipy.signal import fftconvolve, convolve
-from PMF_based_embeddings_implemention.CONSTANTS import NUM_FFT, NUM_FILTERS, LOW_FREQ, HIGH_FREQ, SR
+from CONSTANTS import NUM_FFT, NUM_FILTERS, LOW_FREQ, HIGH_FREQ, SR
 
 class GammatoneFilterbank:
     def __init__(self, num_filters: int = NUM_FILTERS, sample_rate: float = SR, low_freq: float = LOW_FREQ, high_freq: float = HIGH_FREQ, num_fft: int = NUM_FFT, with_inverse: bool = True):
