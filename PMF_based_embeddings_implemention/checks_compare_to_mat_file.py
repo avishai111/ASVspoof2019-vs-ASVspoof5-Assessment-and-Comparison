@@ -59,7 +59,7 @@ if __name__ == "__main__":
     
     matanfilters = loadmat(MATLAB_GAMMATONE_FILTERS) # gammatone filters from Matan's code
     
-    gfb.filers = np.vstack([matanfilters['normal_filters'],matanfilters['inverse_filters']]) # gammatone filters from Matan's code
+    gfb.filters = np.vstack([matanfilters['normal_filters'],matanfilters['inverse_filters']]) # gammatone filters from Matan's code
     
     pmf_t = PMF(TRAIN_FILE_FOLDER, PROTOCOL_TRAIN, ftype=gfb)
     # pmf_d = PMF(DEV_FILE_FOLDER, PROTOCOL_DEV, ftype=gfb)
@@ -77,9 +77,8 @@ if __name__ == "__main__":
     '''
     # pmf_train_spoof, edges_train_spoof = pmf_t.compute_hist_by_category_stream("spoof", num_bins=NUM_BINS, hist_edges=HIST_EDGES)
     
-    # pmf_train_spoof = np.array([pmf for (_, pmf) in pmf_train_spoof])
     # pmf_train_bonafide, edges_train_bonafide = pmf_t.compute_hist_by_category_stream("bonafide", num_bins=NUM_BINS, hist_edges=HIST_EDGES)
-    # pmf_train_bonafide = np.array([pmf for (_, pmf) in pmf_train_bonafide])
+    
     # np.savez(
     # "pmf_train_data.npz",
     # pmf_train_spoof=pmf_train_spoof,
@@ -89,7 +88,7 @@ if __name__ == "__main__":
     # )
 
     data = np.load("pmf_train_data.npz")
-
+    
     pmf_train_spoof = data["pmf_train_spoof"]
     edges_train_spoof = data["edges_train_spoof"]
     pmf_train_bonafide = data["pmf_train_bonafide"]
@@ -98,6 +97,7 @@ if __name__ == "__main__":
     print("PMF histograms for training data computed.")
     # Compute PMF histograms for development speech
     file_path = os.path.join(TRAIN_FILE_FOLDER,"LA_T_1199930.flac")  # Example file, replace with actual file path
+    
     res, filenames = pmf_t.compute_hist_per_input_file_stream(file_path,num_bins = NUM_BINS, hist_edges = HIST_EDGES)
     print("PMF histograms for training data computed.")
     res = res[None, :]  # Add a new axis to match the expected shape
@@ -107,7 +107,6 @@ if __name__ == "__main__":
     dist_spoof = PMF_measure_utils.compute_distances_to_reference(res, pmf_train_spoof)
     dist_bona = PMF_measure_utils.compute_distances_to_reference(res, pmf_train_bonafide)
     
-
     # Compute difference metric-by-metric
     diff = {
         key: dist_spoof[key] - dist_bona[key]  for key in dist_bona

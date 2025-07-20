@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
     # Compute difference metric-by-metric
     diff = {
-        key: dist_bona[key] - dist_spoof[key]  for key in dist_bona
+        key: dist_spoof[key] - dist_bona[key]  for key in dist_bona
     }
     print("Calculating distances between PMF histograms...")
     

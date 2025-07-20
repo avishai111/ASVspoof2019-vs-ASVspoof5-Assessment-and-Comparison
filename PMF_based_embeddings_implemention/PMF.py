@@ -12,6 +12,8 @@ from scipy.io import loadmat
 from scipy.signal import convolve
 import soundfile as sf
 from tqdm import tqdm
+from PMF_based_embeddings_implemention.CONSTANTS import NUM_BINS, HIST_EDGES
+
 class PMF:
     def __init__(self, files_folder, protocol_file=None, ftype=None):
         """
@@ -186,7 +188,9 @@ class PMF:
 
 
 
-    def compute_hist_stream(self, num_bins: int = 512, hist_edges: Tuple[float, float] = (-1.0, 1.0)):
+    def compute_hist_stream(self, num_bins: int = NUM_BINS, 
+                            hist_edges: Tuple[float, float] = HIST_EDGES, 
+                            edge_behavior: str = 'floor') -> List[Tuple[np.ndarray, np.ndarray]]:
         """
         Compute the histogram (PMF) of audio samples in all loaded files
         
@@ -195,11 +199,12 @@ class PMF:
         List[Tuple[counts, pmf]]  -- one (hist, pmf) per filter channel
         """
         if not self.file_list:
-            print("No FLAC files found in the specified folder.")
-            return
-
+            raise FileNotFoundError("No FLAC files found in the specified folder.")
+            
+        edges = np.linspace(hist_edges[0], hist_edges[1], num_bins + 1, dtype=np.float32)
+        scale = num_bins / (hist_edges[1] - hist_edges[0])
         agg_hist = None
-        for i, path in enumerate(self.file_list, 1):
+        for i, path in enumerate(tqdm(self.file_list, desc="Processing files"), 1):
             audio, _ = sf.read(path, dtype='float32')
             if audio.ndim != 1:
                 raise ValueError(f'{path} is not mono.')
@@ -213,21 +218,41 @@ class PMF:
             if agg_hist is None:
                 agg_hist = np.zeros((n_filters, num_bins), dtype=np.int64)
 
-            idx = np.floor((sig - hist_edges[0]) * (num_bins / (hist_edges[1] - hist_edges[0]))).astype(np.int32)
-            np.clip(idx, 0, num_bins - 1, out=idx)
+            # Choose binning method based on edge_behavior
+            if edge_behavior == 'floor':
+                idx = np.floor((sig - hist_edges[0]) * scale).astype(np.int32)
+                np.clip(idx, 0, num_bins - 1, out=idx)
+            elif edge_behavior == 'ceil':
+                # Alternative: shift values slightly to change edge behavior
+                epsilon = 1e-10 * (hist_edges[1] - hist_edges[0])
+                idx = np.floor((sig - hist_edges[0] - epsilon) * scale).astype(np.int32)
+                np.clip(idx, 0, num_bins - 1, out=idx)
+            elif edge_behavior == 'digitize_right':
+                idx = np.digitize(sig.flatten(), edges, right=True) - 1
+                np.clip(idx, 0, num_bins - 1, out=idx)
+                idx = idx.reshape(sig.shape)
+            elif edge_behavior == 'digitize_left':
+                idx = np.digitize(sig.flatten(), edges, right=False) - 1
+                np.clip(idx, 0, num_bins - 1, out=idx)
+                idx = idx.reshape(sig.shape)
+            else:
+                raise ValueError(f"Unknown edge_behavior: {edge_behavior}. Use 'floor', 'ceil', 'digitize_right', or 'digitize_left'.")
 
-            # Accumulate per channel
-            for ch in range(n_filters):
-                np.add.at(agg_hist[ch], idx[ch], 1)
+            offset_idx = idx + (np.arange(n_filters)[:, None] * num_bins)      # shape (n_filters, T)
+            counts = np.bincount(
+                offset_idx.ravel(),
+                minlength=n_filters * num_bins
+            ).reshape(n_filters, num_bins)
 
-            if i % 1000 == 0: # Print progress every 1000 files
-                print(f'[{i}/{len(self.file_list)}] files processed')
+            agg_hist += counts
 
         # Normalise
         pmf = agg_hist / agg_hist.sum(axis=1, keepdims=True)
         return [(agg_hist[k], pmf[k]) for k in range(agg_hist.shape[0])]
-
-    def compute_hist(self, num_bins: int = 512, hist_edges: tuple = (-1, 1)):
+    
+    def compute_hist(self, num_bins: int = NUM_BINS, 
+                     hist_edges: tuple = HIST_EDGES, 
+                     edge_behavior: str = 'floor') -> List[Tuple[np.ndarray, np.ndarray]]:
         """
         Compute the overall histogram (PMF) of the audio samples in all loaded files.
         This method uses self.file_list.
@@ -238,62 +263,116 @@ class PMF:
             Number of bins to use for the histogram.
         hist_edges : tuple, optional
             Tuple containing the minimum and maximum values for the histogram bins.
+        edge_behavior : str, optional
+            Controls how edge values are handled:
+            - 'floor': upper edge values go to last bin (current behavior)
+            - 'ceil': lower edge values go to first bin, upper edge excluded
+            - 'digitize_right': right edges inclusive (numpy.digitize with right=True)
+            - 'digitize_left': left edges inclusive (numpy.digitize with right=False)
             
         Returns:
         --------
-        Histogram counts (an array) computed over all audio samples.
+        List[Tuple[counts, pmf]] -- one (hist, pmf) per filter channel
         """
         if not self.file_list:
-            print("No FLAC files found in the specified folder.")
-            return
+            raise FileNotFoundError("No FLAC files in folder.")
 
         self.hist_edges = np.linspace(hist_edges[0], hist_edges[1], num_bins + 1)
         self.samples_in_hist = 0
-        all_samples = []
-        for i, file in tqdm(enumerate(self.file_list), desc="Processing files", total=len(self.file_list)):
-            audio, sr = sf.read(file)
+        
+        # Initialize aggregation variables
+        agg_hist = None
+        
+        for i, file in enumerate(tqdm(self.file_list, desc="Processing files"), 1):
+            audio, sr = sf.read(file, dtype='float32')
             if audio.ndim != 1:
                 raise ValueError("Only mono audio files are supported.")
+                
             if self.ftype is not None:
+                # Apply filterbank: shape (n_filters, n_samples)
                 filtered_signals = self.ftype.filter_signal(audio)
-                # print(f'Shape audio after filtering: {filtered_signals.shape}')
                 self.samples_in_hist += filtered_signals.shape[1]
-                # print(f'Num samples in file {file}: {filtered_signals.shape[1]}')
-                pmfs = []
-                for filtered_signal in filtered_signals:
-                    # print(f'Sample Length: {filtered_signal.shape[0]}')
-                    hist, bin_edges = np.histogram(filtered_signal, bins=num_bins, range=hist_edges)
-                    hist = hist.astype(np.int32)
-                    pmf = hist / np.sum(hist)
-                    assert np.isclose(np.sum(pmf), 1.0), "PMF does not sum to 1."
-                    pmfs.append((hist, pmf))
-                if i % 1000 == 0 and i:
-                    print(f'Processed {i} files.')
-                    gc.collect()
-                all_samples.append(pmfs)
+                
+                # Initialize aggregated histogram on first file
+                if agg_hist is None:
+                    n_filters = filtered_signals.shape[0]
+                    agg_hist = np.zeros((n_filters, num_bins), dtype=np.int64)
+                
+                # Efficiently bin samples using vectorized operations
+                # Convert samples to bin indices
+                scale = num_bins / (hist_edges[1] - hist_edges[0])
+                
+                # Choose binning method based on edge_behavior
+                if edge_behavior == 'floor':
+                    idx = np.floor((filtered_signals - hist_edges[0]) * scale).astype(np.int32)
+                    np.clip(idx, 0, num_bins - 1, out=idx)
+                elif edge_behavior == 'ceil':
+                    # Alternative: shift values slightly to change edge behavior
+                    epsilon = 1e-10 * (hist_edges[1] - hist_edges[0])
+                    idx = np.floor((filtered_signals - hist_edges[0] - epsilon) * scale).astype(np.int32)
+                    np.clip(idx, 0, num_bins - 1, out=idx)
+                elif edge_behavior == 'digitize_right':
+                    idx = np.digitize(filtered_signals.flatten(), self.hist_edges, right=True) - 1
+                    np.clip(idx, 0, num_bins - 1, out=idx)
+                    idx = idx.reshape(filtered_signals.shape)
+                elif edge_behavior == 'digitize_left':
+                    idx = np.digitize(filtered_signals.flatten(), self.hist_edges, right=False) - 1
+                    np.clip(idx, 0, num_bins - 1, out=idx)
+                    idx = idx.reshape(filtered_signals.shape)
+                else:
+                    raise ValueError(f"Unknown edge_behavior: {edge_behavior}. Use 'floor', 'ceil', 'digitize_right', or 'digitize_left'.")
+                
+                # Accumulate histogram counts per filter channel
+                for ch in range(filtered_signals.shape[0]):
+                    np.add.at(agg_hist[ch], idx[ch], 1)
+                    
             else:
+                # No filtering case
                 self.samples_in_hist += audio.shape[0]
-                # print(f'Num samples in file {file}: {audio.shape[0]}')
-                all_samples.append(audio)
-             
-        # Concatenate all samples into one array
-        # print(f'Total number of samples: {len(all_samples)}')
-        # print(f'Example sample shape: {all_samples[10][0][0].shape}')
-        # print(f'Num samples in histogram: {self.samples_in_hist}')
-        histograms_3d = np.stack([np.stack([tup[0] for tup in sample], axis=0) for sample in all_samples], axis=0)
-        # print(f'Histograms 3D shape: {histograms_3d.shape}')
-        agg_histograms = histograms_3d.sum(axis=0)
-        # print(f'Aggregated histogram shape: {agg_histograms.shape}')
-        agg_pmfs = np.where(agg_histograms.sum(axis=1, keepdims=True) == 0, 0, agg_histograms / agg_histograms.sum(axis=1, keepdims=True))
+                
+                if agg_hist is None:
+                    agg_hist = np.zeros((1, num_bins), dtype=np.int64)
+                
+                # Bin the raw audio
+                scale = num_bins / (hist_edges[1] - hist_edges[0])
+                
+                # Choose binning method based on edge_behavior
+                if edge_behavior == 'floor':
+                    idx = np.floor((audio - hist_edges[0]) * scale).astype(np.int32)
+                    np.clip(idx, 0, num_bins - 1, out=idx)
+                elif edge_behavior == 'ceil':
+                    # Alternative: shift values slightly to change edge behavior
+                    epsilon = 1e-10 * (hist_edges[1] - hist_edges[0])
+                    idx = np.floor((audio - hist_edges[0] - epsilon) * scale).astype(np.int32)
+                    np.clip(idx, 0, num_bins - 1, out=idx)
+                elif edge_behavior == 'digitize_right':
+                    idx = np.digitize(audio, self.hist_edges, right=True) - 1
+                    np.clip(idx, 0, num_bins - 1, out=idx)
+                elif edge_behavior == 'digitize_left':
+                    idx = np.digitize(audio, self.hist_edges, right=False) - 1
+                    np.clip(idx, 0, num_bins - 1, out=idx)
+                else:
+                    raise ValueError(f"Unknown edge_behavior: {edge_behavior}. Use 'floor', 'ceil', 'digitize_right', or 'digitize_left'.")
+                
+                np.add.at(agg_hist[0], idx, 1)
+            
+            if i % 1000 == 0 and i > 0:
+                gc.collect()
+        
+        # Normalize to get PMFs (handle potential division by zero)
+        hist_sums = agg_hist.sum(axis=1, keepdims=True)
+        agg_pmfs = np.where(hist_sums > 0, agg_hist / hist_sums, 0)
+        
+        # Return in the expected format
+        return [(agg_hist[i], agg_pmfs[i]) for i in range(agg_hist.shape[0])]
 
-        # 4️⃣  RE-PACK INTO THE REQUIRED LIST-OF-TUPLES FORMAT
-        aggregated_result = [(agg_histograms[i], agg_pmfs[i]) for i in range(agg_histograms.shape[0])]
-        # print(f'Aggregated result shape: {len(aggregated_result)}')
-        return aggregated_result
-
-    def compute_hist_by_category(self, category, num_bins: int = 4096, hist_edges: tuple = (-1, 1)):
+    def compute_hist_by_category(self, 
+                                 category: str, 
+                                 num_bins: int = NUM_BINS, 
+                                 hist_edges: tuple = HIST_EDGES) -> List[Tuple[np.ndarray, np.ndarray]]:
         """
         Compute the normalized histogram (PMF) for a specific category of files.
+        NOTE: This method is deprecated. Use compute_hist_by_category_stream instead for better performance.
 
         Parameters:
         -----------
@@ -309,10 +388,11 @@ class PMF:
             
         Returns:
         --------
-        A tuple (pmf, edges) where:
-            - pmf: the normalized histogram (PMF) as an array.
-            - edges: the bin edges used for the histogram.
+        If no filterbank: A tuple (pmf, edges) where pmf is 1D array
+        If filterbank: A tuple (result, edges) where result is list of (hist, pmf) tuples per filter
         """
+        print("WARNING: compute_hist_by_category is deprecated. Use compute_hist_by_category_stream for better performance.")
+        
         # Choose the appropriate file list based on the category
         if category.lower() == 'spoof':
             files = self.spoof_files
@@ -323,28 +403,36 @@ class PMF:
         else:
             raise ValueError("Category not recognized. Use 'spoof', 'bonafide', or a valid attack ID.")
 
-        if not files:
-            print(f"No files found for category: {category}")
-            return None
+        if not self.file_list:
+            raise FileNotFoundError("No FLAC files in folder.")
         
         edges = np.linspace(hist_edges[0], hist_edges[1], num_bins + 1)
-        all_samples = []
-        for file in tqdm(files, desc=f"Processing {category} files", total=len(files)):
-            audio, sr = sf.read(file)
-            if audio.ndim != 1:
-                raise ValueError("Only mono audio files are supported.") # ? Change this to np.mean between channels
-            # if self.ftype is not None:
-            #     audio = self.ftype.filter_signal(audio)
-            #     total_samples += audio.shape[1]
-            # else:
-            all_samples.append(audio)
         
-        all_samples_concat = np.concatenate(all_samples)
-        hist, _ = np.histogram(all_samples_concat, bins=edges)
-        pmf = hist / np.sum(hist)
-        return pmf, edges
+        if self.ftype is None:
+            # No filterbank - original behavior
+            all_samples = []
+            for file in files:
+                audio, sr = sf.read(file, dtype='float32')
+                if audio.ndim != 1:
+                    raise ValueError("Only mono audio files are supported.")
+                all_samples.append(audio)
+            
+            all_samples_concat = np.concatenate(all_samples)
+            hist, _ = np.histogram(all_samples_concat, bins=edges)
+            pmf = hist / np.sum(hist)
+            return pmf, edges
+        else:
+            # With filterbank - use streaming approach
+            result = self.compute_hist_by_category_stream(category, num_bins, hist_edges)
+            if result is None:
+                return None
+            return result
 
-    def compute_hist_by_category_stream(self, category: str, num_bins: int = 512, hist_edges: tuple = (-1.0, 1.0)):
+    def compute_hist_by_category_stream(self, 
+                                        category: str, 
+                                        num_bins: int = NUM_BINS, 
+                                        hist_edges: tuple = HIST_EDGES, 
+                                        edge_behavior: str = 'floor'):
         """
         Compute the histogram (PMF) for a specific category of files
 
@@ -356,6 +444,12 @@ class PMF:
             Number of histogram bins.
         hist_edges : tuple, optional
             (min, max) bounds of the histogram.
+        edge_behavior : str, optional
+            Controls how edge values are handled:
+            - 'floor': upper edge values go to last bin (current behavior)
+            - 'ceil': lower edge values go to first bin, upper edge excluded
+            - 'digitize_right': right edges inclusive (numpy.digitize with right=True)
+            - 'digitize_left': left edges inclusive (numpy.digitize with right=False)
 
         Returns
         -------
@@ -375,9 +469,8 @@ class PMF:
         else:
             raise ValueError("Category not recognized. Use 'spoof', 'bonafide', or a valid attack ID.")
 
-        if not files:
-            print(f"No files found for category: {category}")
-            return None
+        if not self.file_list:
+            raise FileNotFoundError("No FLAC files in folder.")
 
         edges = np.linspace(hist_edges[0], hist_edges[1], num_bins + 1, dtype=np.float32)
         scale = num_bins / (hist_edges[1] - hist_edges[0])
@@ -395,8 +488,29 @@ class PMF:
             if agg_hist is None:
                 agg_hist = np.zeros((n_chan, num_bins), dtype=np.int64)
 
-            idx = np.floor((sig - hist_edges[0]) * scale).astype(np.int32)
-            np.clip(idx, 0, num_bins - 1, out=idx)
+            # Choose binning method based on edge_behavior
+            if edge_behavior == 'floor':
+                # Current behavior: upper edge goes to last bin
+                idx = np.floor((sig - hist_edges[0]) * scale).astype(np.int32)
+                np.clip(idx, 0, num_bins - 1, out=idx)
+            elif edge_behavior == 'ceil':
+                # Alternative: shift values slightly to change edge behavior
+                # This makes edge values go to the previous bin
+                epsilon = 1e-10 * (hist_edges[1] - hist_edges[0])
+                idx = np.floor((sig - hist_edges[0] - epsilon) * scale).astype(np.int32)
+                np.clip(idx, 0, num_bins - 1, out=idx)
+            elif edge_behavior == 'digitize_right':
+                # Right edges inclusive: [a, b], (b, c], (c, d], ..., (y, z]
+                idx = np.digitize(sig.flatten(), edges, right=True) - 1
+                np.clip(idx, 0, num_bins - 1, out=idx)
+                idx = idx.reshape(sig.shape)
+            elif edge_behavior == 'digitize_left':
+                # Left edges inclusive: [a, b), [b, c), [c, d), ..., [y, z)
+                idx = np.digitize(sig.flatten(), edges, right=False) - 1
+                np.clip(idx, 0, num_bins - 1, out=idx)
+                idx = idx.reshape(sig.shape)
+            else:
+                raise ValueError(f"Unknown edge_behavior: {edge_behavior}. Use 'floor', 'ceil', 'digitize_right', or 'digitize_left'.")
 
             # Accumulate per channel
             for ch in range(n_chan):
@@ -409,9 +523,16 @@ class PMF:
             pmf = agg_hist[0] / agg_hist[0].sum()
             return pmf, edges
         else:
-            pmf = agg_hist / agg_hist.sum(axis=1, keepdims=True)
-            result = [(agg_hist[k], pmf[k]) for k in range(agg_hist.shape[0])]
-            return result, edges
+            # For filterbank case, return PMF per filter channel (like MATLAB)
+            # Each filter gets its own normalized PMF
+            pmf_list = []
+            for ch in range(n_chan):
+                if agg_hist[ch].sum() > 0:
+                    pmf = agg_hist[ch] / agg_hist[ch].sum()
+                else:
+                    pmf = np.zeros(num_bins, dtype=np.float32)
+                pmf_list.append(pmf)
+            return pmf_list, edges
 
     def plot(self):
         """
@@ -428,7 +549,10 @@ class PMF:
         plt.ylabel("Count")
         plt.show()
 
-    def plot_by_category(self, category, num_bins: int = 4096, hist_edges: tuple = (-0.01, 0.01)):
+    def plot_by_category(self, 
+                         category: str, 
+                         num_bins: int = NUM_BINS, 
+                         hist_edges: tuple = HIST_EDGES):
         """
         Plot the PMF for a specific category.
 
@@ -467,6 +591,7 @@ if __name__ == "__main__":
     low_freq = np.finfo(float).eps
     high_freq = sample_rate // 2
     num_fft = 512
+    
     gfb = GammatoneFilterbank(
     num_filters=num_filters,
     sample_rate=sample_rate,
@@ -477,7 +602,7 @@ if __name__ == "__main__":
     )
     
     pmf = PMF(files_folder=files_folder, protocol_file=protocol_file, ftype=gfb)  # Replace with your actual protocol file path if needed
-    pmf.compute_hist(num_bins=2*16, hist_edges=(-1.0, 1.0))
+    pmf.compute_hist(num_bins=2**16, hist_edges=(-1.0, 1.0))
     pmf.plot()
     
     pmf.plot_by_category('spoof', num_bins=512, hist_edges=(-1.0, 1.0))

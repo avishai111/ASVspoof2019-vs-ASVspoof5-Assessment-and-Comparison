@@ -1,9 +1,10 @@
 import numpy as np
 from scipy.signal import freqz
 from scipy.signal import fftconvolve, convolve
+from PMF_based_embeddings_implemention.CONSTANTS import NUM_FFT, NUM_FILTERS, LOW_FREQ, HIGH_FREQ, SR
 
 class GammatoneFilterbank:
-    def __init__(self, num_filters, sample_rate, low_freq, high_freq, num_fft, with_inverse):
+    def __init__(self, num_filters: int = NUM_FILTERS, sample_rate: float = SR, low_freq: float = LOW_FREQ, high_freq: float = HIGH_FREQ, num_fft: int = NUM_FFT, with_inverse: bool = True):
         """
         Constructs a gammatone filterbank in the time domain.
 
@@ -80,13 +81,6 @@ class GammatoneFilterbank:
             
         filter_normal = filter_normal[indices, :]
         
-        dc_index = filter_normal.shape[1] // 2
-        dc_gain_python = np.abs(filter_normal[:, dc_index])
-        
-        matlab_dc = np.array([0.03616241, 0.0539118, 0.08046636, 0.12015626, 0.09065274, 0.00266321, 0.00720963, 0.01093589, 0.0162972, 0.02427518])
-        norm_factors = dc_gain_python / matlab_dc
-        overall_factor = np.mean(norm_factors)
-        filter_normal = filter_normal / overall_factor
         
         if not self.with_inverse:
             return filter_normal
@@ -106,9 +100,6 @@ class GammatoneFilterbank:
 
         # APPLY THE SAME CHANNEL REORDERING YOU USED FOR filter_normal
         filter_inverted = filter_inverted[indices, :]
-
-        # NORMALIZE BY THE SAME overall_factor
-        filter_inverted = filter_inverted / overall_factor
 
         # STACK THE NORMAL + INVERTED FILTERS
         return np.vstack([filter_normal, filter_inverted])

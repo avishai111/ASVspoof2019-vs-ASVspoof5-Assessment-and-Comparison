@@ -1,0 +1,7 @@
+NUM_BINS = 2**16
+HIST_EDGES = (-0.999969482421875, 1)
+LOW_FREQ = 0
+HIGH_FREQ = 8000
+SR = 16000
+NUM_FILTERS = 10 # 10 Normal + 10 Inverted
+NUM_FFT = 2047 # ! Per Matan's Matlab code
