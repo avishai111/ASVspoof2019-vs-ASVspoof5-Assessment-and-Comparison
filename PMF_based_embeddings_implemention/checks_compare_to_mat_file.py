@@ -131,4 +131,6 @@ if __name__ == "__main__":
     print(diff_array)
     print(embedded_array)
     
-  
+    emb_guy = np.load("./PMF_based_embeddings_implemention/embeddings_output_guy/train_embeddings.npy")
+    filesname = np.load("./PMF_based_embeddings_implemention/embeddings_output_guy/train_filenames.npy")
+    print(f"Guy's embeddings shape: {emb_guy.shape}")
