@@ -422,7 +422,7 @@ def kullback_leibler_divergence(p, q, smoothing_method='abs_discount'):
     assert np.all(q > 0), "q must be positive for all bins where p is positive."
     
     # Compute the KL divergence.
-    div = np.sum(p * np.log(p / q))
+    div = np.sum(p * np.log(p / q), dtype = np.float64)
     return div
 
 
@@ -633,9 +633,9 @@ def compute_distances_to_reference(pmf_batch: np.ndarray, ref_pmf: np.ndarray) -
         "correlation": np.zeros((n_files, n_channels)),
         "hellinger": np.zeros((n_files, n_channels)),
         "intersection": np.zeros((n_files, n_channels)),
-        "kl_divergence": np.zeros((n_files, n_channels)),
-        "symmetric_kl": np.zeros((n_files, n_channels)),
         "jensen_shannon": np.zeros((n_files, n_channels)),
+        "symmetric_kl": np.zeros((n_files, n_channels)),
+        "kl_divergence": np.zeros((n_files, n_channels)),
         "modified_ks": np.zeros((n_files, n_channels)),
     }
 
@@ -648,9 +648,9 @@ def compute_distances_to_reference(pmf_batch: np.ndarray, ref_pmf: np.ndarray) -
             results["correlation"][i, ch] = correlation_distance(p, q)
             results["hellinger"][i, ch] = hellinger_distance(p, q)
             results["intersection"][i, ch] = intersection_distance(p, q)
-            results["kl_divergence"][i, ch] = kullback_leibler_divergence(p, q,'abs_discount') #
-            results["symmetric_kl"][i, ch] = symmetric_kullback_leibler_divergence(p, q) #
             results["jensen_shannon"][i, ch] = jensen_shannon_divergence(p, q) #
+            results["symmetric_kl"][i, ch] = symmetric_kullback_leibler_divergence(p, q) #
+            results["kl_divergence"][i, ch] = kullback_leibler_divergence(p, q,'abs_discount') #
             results["modified_ks"][i, ch] = modified_kolmogorov_smirnov(p, q)
 
     return results
@@ -663,6 +663,28 @@ if __name__ == '__main__':
     # Example histograms (probability mass functions)
     p = [0.01, 0.02, 0.03, 0.04, 0.3, 0.2 , 0.4]
     q = [0.02, 0.03, 0.04, 0.05, 0.3, 0.2 , 0.36]
+    assert len(p) == len(q), "Both PMFs must have the same number of bins."
+    assert sum(p) == 1.0, "PMF p must sum to 1."
+    assert sum(q) == 1.0, "PMF q must sum to 1."
+    
+    data = np.load("pmf_train_data.npz")
+    
+    pmf_train_spoof = data["pmf_train_spoof"]
+    edges_train_spoof = data["edges_train_spoof"]
+    pmf_train_bonafide = data["pmf_train_bonafide"]
+    edges_train_bonafide = data["edges_train_bonafide"]
+
+
+    p = pmf_train_spoof[0]
+    q = pmf_train_bonafide[0]
+    p1  = np.expand_dims(p,axis = 0)
+    q1 = np.expand_dims(q,axis = 0)
+    p1 = np.expand_dims(p1,axis = 0)
+    dist = compute_distances_to_reference(p1, q1)
+    print("Computed Distances:")
+    for key, value in dist.items():
+        print(f"{key}: {value}")
+    
     
     # Compute each distance measure
     chi_stat = chi_square_test(p, q)
@@ -678,14 +700,14 @@ if __name__ == '__main__':
     print(f"PMFs: p = {p}, q = {q}")
     print("Distance Measures Results:")
     
-    print(f"Chi-Square Statistic: {chi_stat:.4f}")
-    print(f"Correlation Distance: {corr_dist:.4f}")
-    print(f"Hellinger Distance: {hellinger_dist:.4f}")
-    print(f"Intersection Distance: {inter_dist:.4f}")
-    print(f"Kullback-Leibler Divergence: {kld:.4f}")
-    print(f"Symmetric Kullback-Leibler Divergence: {kls:.4f}")
-    print(f"Jensen-Shannon Divergence: {jsd:.4f}")
-    print(f"Modified Kolmogorov-Smirnov Statistic: {mks:.4f}")
+    print(f"Chi-Square Statistic: {chi_stat:.8f}")
+    print(f"Correlation Distance: {corr_dist:.8f}")
+    print(f"Hellinger Distance: {hellinger_dist:.8f}")
+    print(f"Intersection Distance: {inter_dist:.8f}")
+    print(f"Kullback-Leibler Divergence: {kld:.8f}")
+    print(f"Symmetric Kullback-Leibler Divergence: {kls:.8f}")
+    print(f"Jensen-Shannon Divergence: {jsd:.8f}")
+    print(f"Modified Kolmogorov-Smirnov Statistic: {mks:.8f}")
     
     
 

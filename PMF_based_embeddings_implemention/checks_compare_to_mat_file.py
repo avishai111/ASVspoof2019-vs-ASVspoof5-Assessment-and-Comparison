@@ -44,6 +44,7 @@ if __name__ == "__main__":
     true_channels_indexes = true_channels_indexes - 1
     true_channels_indexes = true_channels_indexes.astype(int)
     columns_names = np.array(columns_names)
+    columns_names = columns_names[true_channels_indexes]
     embedded_groups_1_1 = embedded_groups_1_1[:,true_channels_indexes]
     
     
@@ -101,8 +102,8 @@ if __name__ == "__main__":
     res, filenames = pmf_t.compute_hist_per_input_file_stream(file_path,num_bins = NUM_BINS, hist_edges = HIST_EDGES)
     print("PMF histograms for training data computed.")
     res = res[None, :]  # Add a new axis to match the expected shape
-    
-    #calculate distnaces bettween the PMF histograms
+
+    #calculate distances between the PMF histograms
     print("Calculating distances between PMF histograms...")
     dist_spoof = PMF_measure_utils.compute_distances_to_reference(res, pmf_train_spoof)
     dist_bona = PMF_measure_utils.compute_distances_to_reference(res, pmf_train_bonafide)
@@ -112,12 +113,12 @@ if __name__ == "__main__":
         key: dist_spoof[key] - dist_bona[key]  for key in dist_spoof
     }
     interleaved = []
-    for i in range(20):  # 20 steps × 8 metrics = 160
+    for i in range(20):  # 20 steps × 8 metrics = 160 # 1 
         for key in diff.keys():
             value = diff[key].flatten()  # ensure it's a 1D array
             interleaved.append(value[i])
 
-    diff_df = pd.DataFrame([interleaved], columns=columns_names)
+    diff_df = pd.DataFrame([interleaved], columns = columns_names, dtype = np.float32)
     
     
     diff_array = diff_df.values.flatten()[0:8]  # shape (160,)
