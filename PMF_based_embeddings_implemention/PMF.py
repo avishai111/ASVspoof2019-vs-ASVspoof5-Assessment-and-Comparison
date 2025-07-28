@@ -222,7 +222,18 @@ class PMF:
                             edge_behavior: str = 'floor') -> List[Tuple[np.ndarray, np.ndarray]]:
         """
         Compute the histogram (PMF) of audio samples in all loaded files
-        
+         Parameters
+        ----------
+        num_bins : int, optional
+            Number of histogram bins.
+        hist_edges : tuple, optional
+            (min, max) bounds of the histogram.
+        edge_behavior : str, optional
+            Controls how edge values are handled:
+            - 'floor': upper edge values go to last bin
+            - 'ceil': lower edge values go to first bin, upper edge excluded
+            - 'digitize_right': right edges inclusive (numpy.digitize with right=True)
+            - 'digitize_left': left edges inclusive (numpy.digitize with right=False)
         Returns
         -------
         List[Tuple[counts, pmf]]  -- one (hist, pmf) per filter channel
@@ -248,32 +259,53 @@ class PMF:
                 agg_hist = np.zeros((n_filters, num_bins), dtype=np.int64)
 
             # Choose binning method based on edge_behavior
-            if edge_behavior == 'floor':
+            if edge_behavior == 'matlab_histcounts':
+                # Match MATLAB's histcounts behavior exactly
+                hist_counts, _ = np.histogram(sig.flatten(), bins=edges)
+                hist_counts = hist_counts.reshape((sig.shape[0], -1))
+                agg_hist += hist_counts
+            elif edge_behavior == 'floor':
                 idx = np.floor((sig - hist_edges[0]) * scale).astype(np.int32)
                 np.clip(idx, 0, num_bins - 1, out=idx)
+                offset_idx = idx + (np.arange(n_filters)[:, None] * num_bins)      # shape (n_filters, T)
+                counts = np.bincount(
+                    offset_idx.ravel(),
+                    minlength=n_filters * num_bins
+                ).reshape(n_filters, num_bins)
+                agg_hist += counts
             elif edge_behavior == 'ceil':
                 # Alternative: shift values slightly to change edge behavior
                 epsilon = 1e-10 * (hist_edges[1] - hist_edges[0])
                 idx = np.floor((sig - hist_edges[0] - epsilon) * scale).astype(np.int32)
                 np.clip(idx, 0, num_bins - 1, out=idx)
+                offset_idx = idx + (np.arange(n_filters)[:, None] * num_bins)      # shape (n_filters, T)
+                counts = np.bincount(
+                    offset_idx.ravel(),
+                    minlength=n_filters * num_bins
+                ).reshape(n_filters, num_bins)
+                agg_hist += counts
             elif edge_behavior == 'digitize_right':
                 idx = np.digitize(sig.flatten(), edges, right=True) - 1
                 np.clip(idx, 0, num_bins - 1, out=idx)
                 idx = idx.reshape(sig.shape)
+                offset_idx = idx + (np.arange(n_filters)[:, None] * num_bins)      # shape (n_filters, T)
+                counts = np.bincount(
+                    offset_idx.ravel(),
+                    minlength=n_filters * num_bins
+                ).reshape(n_filters, num_bins)
+                agg_hist += counts
             elif edge_behavior == 'digitize_left':
                 idx = np.digitize(sig.flatten(), edges, right=False) - 1
                 np.clip(idx, 0, num_bins - 1, out=idx)
                 idx = idx.reshape(sig.shape)
+                offset_idx = idx + (np.arange(n_filters)[:, None] * num_bins)      # shape (n_filters, T)
+                counts = np.bincount(
+                    offset_idx.ravel(),
+                    minlength=n_filters * num_bins
+                ).reshape(n_filters, num_bins)
+                agg_hist += counts
             else:
                 raise ValueError(f"Unknown edge_behavior: {edge_behavior}. Use 'floor', 'ceil', 'digitize_right', or 'digitize_left'.")
-
-            offset_idx = idx + (np.arange(n_filters)[:, None] * num_bins)      # shape (n_filters, T)
-            counts = np.bincount(
-                offset_idx.ravel(),
-                minlength=n_filters * num_bins
-            ).reshape(n_filters, num_bins)
-
-            agg_hist += counts
 
         # Normalise
         pmf = agg_hist / agg_hist.sum(axis=1, keepdims=True)
@@ -332,7 +364,12 @@ class PMF:
                 scale = num_bins / (hist_edges[1] - hist_edges[0])
                 
                 # Choose binning method based on edge_behavior
-                if edge_behavior == 'floor':
+                if edge_behavior == 'matlab_histcounts':
+                    # Match MATLAB's histcounts behavior exactly
+                    # MATLAB: left edges inclusive (except first), right edge inclusive for last bin only
+                    hist_counts, _ = np.histogram(filtered_signals.flatten(), bins=self.hist_edges)
+                    hist_counts = hist_counts.reshape((filtered_signals.shape[0], -1))
+                elif edge_behavior == 'floor':
                     idx = np.floor((filtered_signals - hist_edges[0]) * scale).astype(np.int32)
                     np.clip(idx, 0, num_bins - 1, out=idx)
                 elif edge_behavior == 'ceil':
@@ -351,9 +388,14 @@ class PMF:
                 else:
                     raise ValueError(f"Unknown edge_behavior: {edge_behavior}. Use 'floor', 'ceil', 'digitize_right', or 'digitize_left'.")
                 
-                # Accumulate histogram counts per filter channel
-                for ch in range(filtered_signals.shape[0]):
-                    np.add.at(agg_hist[ch], idx[ch], 1)
+                # Handle different accumulation methods
+                if edge_behavior == 'matlab_histcounts':
+                    # hist_counts is already computed above
+                    agg_hist += hist_counts
+                else:
+                    # Accumulate histogram counts per filter channel
+                    for ch in range(filtered_signals.shape[0]):
+                        np.add.at(agg_hist[ch], idx[ch], 1)
                     
             else:
                 # No filtering case
@@ -366,24 +408,31 @@ class PMF:
                 scale = num_bins / (hist_edges[1] - hist_edges[0])
                 
                 # Choose binning method based on edge_behavior
-                if edge_behavior == 'floor':
+                if edge_behavior == 'matlab_histcounts':
+                    # Match MATLAB's histcounts behavior exactly
+                    hist_counts, _ = np.histogram(audio, bins=self.hist_edges)
+                    agg_hist[0] += hist_counts
+                elif edge_behavior == 'floor':
                     idx = np.floor((audio - hist_edges[0]) * scale).astype(np.int32)
                     np.clip(idx, 0, num_bins - 1, out=idx)
+                    np.add.at(agg_hist[0], idx, 1)
                 elif edge_behavior == 'ceil':
                     # Alternative: shift values slightly to change edge behavior
                     epsilon = 1e-10 * (hist_edges[1] - hist_edges[0])
                     idx = np.floor((audio - hist_edges[0] - epsilon) * scale).astype(np.int32)
                     np.clip(idx, 0, num_bins - 1, out=idx)
+                    np.add.at(agg_hist[0], idx, 1)
                 elif edge_behavior == 'digitize_right':
                     idx = np.digitize(audio, self.hist_edges, right=True) - 1
                     np.clip(idx, 0, num_bins - 1, out=idx)
+                    np.add.at(agg_hist[0], idx, 1)
                 elif edge_behavior == 'digitize_left':
                     idx = np.digitize(audio, self.hist_edges, right=False) - 1
                     np.clip(idx, 0, num_bins - 1, out=idx)
+                    np.add.at(agg_hist[0], idx, 1)
                 else:
                     raise ValueError(f"Unknown edge_behavior: {edge_behavior}. Use 'floor', 'ceil', 'digitize_right', or 'digitize_left'.")
                 
-                np.add.at(agg_hist[0], idx, 1)
             
             if i % 1000 == 0 and i > 0:
                 gc.collect()
@@ -518,33 +567,45 @@ class PMF:
                 agg_hist = np.zeros((n_chan, num_bins), dtype=np.int64)
 
             # Choose binning method based on edge_behavior
-            if edge_behavior == 'floor':
+            if edge_behavior == 'matlab_histcounts':
+                # Match MATLAB's histcounts behavior exactly
+                hist_counts, _ = np.histogram(sig.flatten(), bins=edges)
+                hist_counts = hist_counts.reshape((sig.shape[0], -1))
+                agg_hist += hist_counts
+            elif edge_behavior == 'floor':
                 # Current behavior: upper edge goes to last bin
                 idx = np.floor((sig - hist_edges[0]) * scale).astype(np.int32)
                 np.clip(idx, 0, num_bins - 1, out=idx)
+                # Accumulate per channel
+                for ch in range(n_chan):
+                    np.add.at(agg_hist[ch], idx[ch], 1)
             elif edge_behavior == 'ceil':
                 # Alternative: shift values slightly to change edge behavior
                 # This makes edge values go to the previous bin
                 epsilon = 1e-10 * (hist_edges[1] - hist_edges[0])
                 idx = np.floor((sig - hist_edges[0] - epsilon) * scale).astype(np.int32)
                 np.clip(idx, 0, num_bins - 1, out=idx)
+                # Accumulate per channel
+                for ch in range(n_chan):
+                    np.add.at(agg_hist[ch], idx[ch], 1)
             elif edge_behavior == 'digitize_right':
                 # Right edges inclusive: [a, b], (b, c], (c, d], ..., (y, z]
                 idx = np.digitize(sig.flatten(), edges, right=True) - 1
                 np.clip(idx, 0, num_bins - 1, out=idx)
                 idx = idx.reshape(sig.shape)
+                # Accumulate per channel
+                for ch in range(n_chan):
+                    np.add.at(agg_hist[ch], idx[ch], 1)
             elif edge_behavior == 'digitize_left':
                 # Left edges inclusive: [a, b), [b, c), [c, d), ..., [y, z)
                 idx = np.digitize(sig.flatten(), edges, right=False) - 1
                 np.clip(idx, 0, num_bins - 1, out=idx)
                 idx = idx.reshape(sig.shape)
+             # Accumulate per channel
+                for ch in range(n_chan):
+                    np.add.at(agg_hist[ch], idx[ch], 1)
             else:
                 raise ValueError(f"Unknown edge_behavior: {edge_behavior}. Use 'floor', 'ceil', 'digitize_right', or 'digitize_left'.")
-
-            # Accumulate per channel
-            for ch in range(n_chan):
-                np.add.at(agg_hist[ch], idx[ch], 1)
-
             if i % 1_000 == 0:
                 print(f"[{i}/{len(files)}] files processed for category '{category}'")
 

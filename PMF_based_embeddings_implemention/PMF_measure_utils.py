@@ -365,7 +365,7 @@ def abs_discount_smoothing(p, q, is_remove_common_zeros=True):
     return p, q
 
 
-def kullback_leibler_divergence(p, q, smoothing_method='abs_discount'):
+def kullback_leibler_divergence(p, q, smoothing_method='matlab_style'):
     """
     Compute the Kullback-Leibler divergence between two probability distributions
     with an optional smoothing method.
@@ -381,10 +381,11 @@ def kullback_leibler_divergence(p, q, smoothing_method='abs_discount'):
     q : array-like
         1D array representing the second probability distribution.
     smoothing_method : str, optional
-        Smoothing method to apply. Options:
+        Smoothing method to apply. Options: 
+          - 'matlab_style': Use MATLAB-compatible masking: (p != 0) & (q != 0).
           - 'none': No smoothing; only use bins where p is nonzero.
           - 'abs_discount': Apply absolute discount smoothing (see abs_discount_smoothing).
-        Default is 'none'.
+        Default is 'matlab_style'.
     
     Returns
     -------
@@ -406,7 +407,14 @@ def kullback_leibler_divergence(p, q, smoothing_method='abs_discount'):
     assert p.ndim == 1, "Input p must be a one-dimensional array."
     assert q.ndim == 1, "Input q must be a one-dimensional array."
     
-    if smoothing_method == 'none':
+    if smoothing_method == 'matlab_style':
+        # Use MATLAB-style masking: indices = (p1~=0 & p2~=0)
+        mask = (p != 0) & (q != 0)
+        if not np.any(mask):
+            return np.inf
+        p = p[mask]
+        q = q[mask]
+    elif smoothing_method == 'none':
         # Use only bins where p is nonzero.
         mask = (p != 0)
         p = p[mask]
@@ -650,7 +658,7 @@ def compute_distances_to_reference(pmf_batch: np.ndarray, ref_pmf: np.ndarray) -
             results["intersection"][i, ch] = intersection_distance(p, q)
             results["jensen_shannon"][i, ch] = jensen_shannon_divergence(p, q) #
             results["symmetric_kl"][i, ch] = symmetric_kullback_leibler_divergence(p, q) #
-            results["kl_divergence"][i, ch] = kullback_leibler_divergence(p, q,'abs_discount') #
+            results["kl_divergence"][i, ch] = kullback_leibler_divergence(p, q) #
             results["modified_ks"][i, ch] = modified_kolmogorov_smirnov(p, q)
 
     return results
@@ -710,4 +718,3 @@ if __name__ == '__main__':
     print(f"Modified Kolmogorov-Smirnov Statistic: {mks:.8f}")
     
     
-
