@@ -181,12 +181,10 @@ cython_debug/
 # audio files
 *.wav
 *.flac
-*.mat
 
 # Ignore directories (trailing slash makes it clear they're folders)
 PMF_based_embeddings_implemention/ASVspoof2019
 PMF_based_embeddings_implemention/LA
-PMF_based_embeddings_implemention/checks
 PMF_based_embeddings_implemention/embeddings_output_guy
 
 # Ignore a specific file
