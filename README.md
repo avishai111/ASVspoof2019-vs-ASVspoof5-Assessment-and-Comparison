@@ -6,7 +6,7 @@
 
 [![Interspeech 2025](https://img.shields.io/badge/Interspeech-2025-blue)](https://www.isca-archive.org/interspeech_2025/weizman25_interspeech.pdf)
 
-This repository contains the official implementation of the paper ["ASVspoof2019 vs. ASVspoof5: Assessment and Comparison"](https://arxiv.org/abs/2505.15911).
+This repository contains the official implementation of the paper ["ASVspoof2019 vs. ASVspoof5: Assessment and Comparison"]([https://arxiv.org/abs/2505.15911](https://www.isca-archive.org/interspeech_2025/weizman25_interspeech.pdf)).
 
 In this work, we conduct a comprehensive assessment and comparison of two benchmark databases (ASVspoof2019 and ASVspoof5) used for developing spoofing countermeasures for automatic speaker verification systems. 
 
