@@ -1,4 +1,4 @@
-# 📄 [ASVspoof2019 vs. ASVspoof5: Assessment and Comparison](https://arxiv.org/abs/2505.15911)
+# 📄 [ASVspoof2019 vs. ASVspoof5: Assessment and Comparison](https://www.isca-archive.org/interspeech_2025/weizman25_interspeech.pdf)
 
 [![DOI](https://zenodo.org/badge/989175394.svg)](https://doi.org/10.5281/zenodo.15502715)
 
@@ -80,7 +80,7 @@ If you use this codebase in your research or publications, please consider citin
 ## 🙌 Acknowledgements
 
 This work is based on the ASVspoof Challenge databases and research on spoofing countermeasures (CM) for automatic speaker verification (ASV) systems.
-Thank to the authors of the following repositories:
+Thanks to the authors of the following repositories:
 
 ```bibtex
 @ARTICLE{zhang2021one,
