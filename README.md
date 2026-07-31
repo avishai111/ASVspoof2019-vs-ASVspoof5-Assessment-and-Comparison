@@ -1,6 +1,6 @@
 # 📄 [ASVspoof2019 vs. ASVspoof5: Assessment and Comparison](https://www.isca-archive.org/interspeech_2025/weizman25_interspeech.pdf)
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15502715.svg)](https://doi.org/10.5281/zenodo.15502715)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.15502715-blue.svg)](https://doi.org/10.5281/zenodo.15502715)
 
 [![arXiv](https://img.shields.io/badge/arXiv-2505.15911-b31b1b.svg)](https://doi.org/10.48550/arXiv.2505.15911)
 
